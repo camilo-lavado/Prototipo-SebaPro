@@ -1,8 +1,8 @@
 import { useUser } from '../context/UserContext'
 
 const INCIDENTES = [
-  { fecha: '2025-10-14', tipo: 'Accidente en Campus', descripcion: 'Caída en escalera — atención médica en clínica IPSS', estado: 'Cerrado', monto: '$85.000' },
-  { fecha: '2026-03-02', tipo: 'Consulta Telemedicina', descripcion: 'Consulta médica general vía plataforma', estado: 'Cerrado', monto: '$0 (incluido)' },
+  { fecha:'2025-10-14', tipo:'Accidente en Campus', desc:'Caída en escalera — atención clínica IPSS', estado:'Cerrado', monto:'$85.000' },
+  { fecha:'2026-03-02', tipo:'Consulta Telemedicina', desc:'Consulta médica general vía plataforma', estado:'Cerrado', monto:'$0 (incluido)' },
 ]
 
 export default function SeguroAcademico() {
@@ -10,56 +10,45 @@ export default function SeguroAcademico() {
   const { seguro, nombre } = currentUser
 
   return (
-    <div className="content-area" style={{ gridTemplateColumns: '1fr 1fr' }}>
+    <div className="content-area" style={{ gridTemplateColumns:'1fr 1fr' }}>
 
-      {/* Póliza */}
-      <div className="card" style={{ gridColumn: '1 / -1', display: 'flex', gap: 20, alignItems: 'center', background: 'linear-gradient(135deg, #1a1a2e, #0f3460)', color: 'white' }}>
-        <div style={{ fontSize: 48 }}>🛡️</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, color: '#74b9ff', fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>Seguro Académico Activo</div>
-          <div style={{ fontSize: 20, fontWeight: 800, marginTop: 4 }}>{seguro.tipo}</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 4 }}>{seguro.cobertura}</div>
+      {/* Póliza hero */}
+      <div className="col-full" style={{
+        background:'linear-gradient(135deg,var(--green-900),var(--green-700))',
+        borderRadius:20, padding:'22px 26px', color:'white',
+        display:'flex', gap:20, alignItems:'center', boxShadow:'var(--shadow-lg)',
+      }}>
+        <span style={{ fontSize:48 }}>🛡️</span>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:11,fontWeight:700,color:'rgba(255,255,255,0.5)',letterSpacing:1,textTransform:'uppercase',marginBottom:4 }}>Seguro Académico Activo</div>
+          <div style={{ fontSize:20,fontWeight:900 }}>{seguro.tipo}</div>
+          <div style={{ fontSize:12,color:'rgba(255,255,255,0.6)',marginTop:4 }}>{seguro.cobertura}</div>
         </div>
-        <div style={{ textAlign: 'right', flexShrink: 0 }}>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>N° Póliza</div>
-          <div style={{ fontFamily: 'monospace', fontSize: 14, fontWeight: 700, color: '#74b9ff' }}>{seguro.poliza}</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 6 }}>Vigente hasta {new Date(seguro.vigencia).toLocaleDateString('es-CL')}</div>
-          <div style={{
-            marginTop: 8, display: 'inline-block', background: '#00b894',
-            color: 'white', borderRadius: 20, padding: '4px 14px',
-            fontSize: 11, fontWeight: 700,
-          }}>✓ ACTIVO</div>
+        <div style={{ textAlign:'right',flexShrink:0 }}>
+          <div style={{ fontSize:10,color:'rgba(255,255,255,0.4)',marginBottom:2 }}>N° Póliza</div>
+          <div style={{ fontFamily:'monospace',fontSize:13,fontWeight:700,color:'rgba(255,255,255,0.85)' }}>{seguro.poliza}</div>
+          <div style={{ fontSize:11,color:'rgba(255,255,255,0.4)',marginTop:6 }}>Vigente hasta {new Date(seguro.vigencia).toLocaleDateString('es-CL')}</div>
+          <div style={{ marginTop:8,display:'inline-block',background:'var(--green-500)',color:'white',borderRadius:20,padding:'4px 14px',fontSize:11,fontWeight:700 }}>✓ ACTIVO</div>
         </div>
       </div>
 
       {/* Beneficios */}
       <div className="card">
         <div className="card-title">✅ Cobertura y Beneficios</div>
-        {seguro.beneficios.map((b, i) => (
-          <div key={i} style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '10px 0', borderBottom: '1px solid #f0f2f5',
-          }}>
-            <div style={{
-              width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-              background: b.activo ? '#d1e7dd' : '#f8f9fa',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14,
-            }}>
-              {b.activo ? '✅' : '⬜'}
+        {seguro.beneficios.map((b,i)=>(
+          <div key={i} style={{ display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid var(--green-50)' }}>
+            <div style={{ width:28,height:28,borderRadius:'50%',flexShrink:0,background:b.activo?'var(--green-100)':'#F1F5F9',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14 }}>
+              {b.activo?'✅':'⬜'}
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: b.activo ? '#2d3436' : '#adb5bd' }}>{b.nombre}</div>
-              <div style={{ fontSize: 11, color: b.activo ? '#00b894' : '#adb5bd', fontWeight: 700 }}>{b.monto}</div>
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:13,fontWeight:600,color:b.activo?'var(--text-1)':'#94A3B8' }}>{b.nombre}</div>
+              <div style={{ fontSize:11,fontWeight:700,color:b.activo?'var(--green-600)':'#94A3B8' }}>{b.monto}</div>
             </div>
-            {!b.activo && (
-              <span style={{ fontSize: 10, color: '#adb5bd', background: '#f0f2f5', padding: '3px 8px', borderRadius: 8 }}>No incluido</span>
-            )}
+            {!b.activo && <span style={{ fontSize:10,color:'#94A3B8',background:'#F1F5F9',padding:'3px 8px',borderRadius:8 }}>No incluido</span>}
           </div>
         ))}
-
-        {seguro.beneficios.some(b => !b.activo) && (
-          <div style={{ marginTop: 12, padding: '10px 12px', background: '#e8f4fd', borderRadius: 8, fontSize: 11, color: '#0f3460', fontWeight: 500 }}>
+        {seguro.beneficios.some(b=>!b.activo)&&(
+          <div style={{ marginTop:12,padding:'10px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--green-800)',fontWeight:500 }}>
             💡 Completa tu perfil SebaPro para acceder a cobertura de micro-tareas externas.
           </div>
         )}
@@ -68,75 +57,48 @@ export default function SeguroAcademico() {
       {/* Datos aseguradora */}
       <div className="card">
         <div className="card-title">🏢 Datos de la Aseguradora</div>
-
         {[
-          { label: 'Aseguradora', value: seguro.aseguradora },
-          { label: 'Tomador', value: 'Instituto Profesional San Sebastián' },
-          { label: 'Asegurado', value: nombre },
-          { label: 'Tipo de seguro', value: seguro.tipo },
-          { label: 'Vigencia desde', value: '01/03/2026' },
-          { label: 'Vigencia hasta', value: new Date(seguro.vigencia).toLocaleDateString('es-CL') },
-          { label: 'Central de siniestros', value: '600 123 4567' },
-          { label: 'Correo de contacto', value: 'seguros@sansebastian.cl' },
-        ].map(r => (
-          <div key={r.label} style={{
-            display: 'flex', justifyContent: 'space-between',
-            padding: '7px 0', borderBottom: '1px solid #f0f2f5', fontSize: 12,
-          }}>
-            <span style={{ color: '#636e72', fontWeight: 500 }}>{r.label}</span>
-            <span style={{ fontWeight: 700, color: '#0f3460', textAlign: 'right', maxWidth: '60%' }}>{r.value}</span>
+          ['Aseguradora',seguro.aseguradora],
+          ['Tomador','Instituto Profesional San Sebastián'],
+          ['Asegurado',nombre],
+          ['Tipo de seguro',seguro.tipo],
+          ['Vigencia desde','01/03/2026'],
+          ['Vigencia hasta',new Date(seguro.vigencia).toLocaleDateString('es-CL')],
+          ['Central de siniestros','600 123 4567'],
+          ['Correo de contacto','seguros@sansebastian.cl'],
+        ].map(([l,v])=>(
+          <div key={l} style={{ display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--green-50)',fontSize:12 }}>
+            <span style={{ color:'var(--text-2)',fontWeight:500 }}>{l}</span>
+            <span style={{ fontWeight:700,color:'var(--green-800)',textAlign:'right',maxWidth:'60%' }}>{v}</span>
           </div>
         ))}
-
-        <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button style={{
-            padding: '8px 14px', borderRadius: 8, border: 'none',
-            background: 'linear-gradient(135deg, #0f3460, #0984e3)',
-            color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-          }}>📄 Descargar Póliza PDF</button>
-          <button style={{
-            padding: '8px 14px', borderRadius: 8, border: '1.5px solid #0984e3',
-            background: 'white', color: '#0984e3', fontSize: 12, fontWeight: 600,
-            cursor: 'pointer', fontFamily: 'inherit',
-          }}>📞 Declarar Siniestro</button>
+        <div style={{ marginTop:14,display:'flex',gap:8 }}>
+          <button className="btn btn-primary btn-sm">📄 Descargar Póliza PDF</button>
+          <button className="btn btn-outline btn-sm">📞 Declarar Siniestro</button>
         </div>
       </div>
 
-      {/* Historial siniestros */}
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
+      {/* Historial */}
+      <div className="card col-full">
         <div className="card-title">📋 Historial de Uso del Seguro</div>
-        {INCIDENTES.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '20px 0', color: '#b2bec3', fontSize: 13 }}>
-            Sin incidentes registrados
-          </div>
-        ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-            <thead>
-              <tr style={{ background: '#f8f9fa' }}>
-                {['Fecha', 'Tipo de Evento', 'Descripción', 'Monto Cubierto', 'Estado'].map(h => (
-                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#636e72', textTransform: 'uppercase' }}>{h}</th>
-                ))}
+        <table className="data-table">
+          <thead><tr>
+            {['Fecha','Tipo de Evento','Descripción','Monto Cubierto','Estado'].map(h=><th key={h}>{h}</th>)}
+          </tr></thead>
+          <tbody>
+            {INCIDENTES.map((inc,i)=>(
+              <tr key={i}>
+                <td style={{ fontFamily:'monospace',fontSize:11 }}>{new Date(inc.fecha).toLocaleDateString('es-CL')}</td>
+                <td style={{ fontWeight:600 }}>{inc.tipo}</td>
+                <td style={{ color:'var(--text-2)' }}>{inc.desc}</td>
+                <td style={{ fontWeight:700,color:'var(--green-600)' }}>{inc.monto}</td>
+                <td><span className="badge finalizada">{inc.estado}</span></td>
               </tr>
-            </thead>
-            <tbody>
-              {INCIDENTES.map((inc, i) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f0f2f5' }}>
-                  <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11 }}>{new Date(inc.fecha).toLocaleDateString('es-CL')}</td>
-                  <td style={{ padding: '10px 12px', fontWeight: 600 }}>{inc.tipo}</td>
-                  <td style={{ padding: '10px 12px', color: '#636e72' }}>{inc.descripcion}</td>
-                  <td style={{ padding: '10px 12px', fontWeight: 700, color: '#00b894' }}>{inc.monto}</td>
-                  <td style={{ padding: '10px 12px' }}>
-                    <span style={{ background: '#d1e7dd', color: '#0a3622', padding: '3px 10px', borderRadius: 10, fontSize: 10, fontWeight: 700 }}>
-                      {inc.estado}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        <div style={{ marginTop: 12, padding: '10px 12px', background: '#f8f9fa', borderRadius: 8, fontSize: 11, color: '#636e72' }}>
-          ⚠️ Para declarar un nuevo siniestro, contacta a la unidad de bienestar estudiantil o llama al 600 123 4567 (24/7).
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop:10,padding:'9px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--text-2)' }}>
+          ⚠️ Para declarar un siniestro contacta a Bienestar Estudiantil o llama al 600 123 4567 (24/7).
         </div>
       </div>
 

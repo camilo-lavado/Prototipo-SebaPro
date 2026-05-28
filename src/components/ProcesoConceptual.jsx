@@ -2,40 +2,40 @@ const PROCESOS = [
   {
     titulo: '(1) Validación de Competencias',
     pasos: [
-      { icon: '🎓', label: 'Habilidades del Estudiante' },
-      { icon: '→', arrow: true },
-      { icon: '👨‍💼', label: 'Director de Programa' },
-      { icon: '→', arrow: true },
-      { icon: '✅', label: 'Aprobado para Servicio' },
+      { icon: '🎓', label: 'Habilidades del estudiante' },
+      { arrow: true },
+      { icon: '👨‍💼', label: 'Director de programa' },
+      { arrow: true },
+      { icon: '✅', label: 'Aprobado para servicio' },
     ],
-    color: '#e8f4fd',
+    bg: 'var(--green-50)', border: 'var(--green-100)',
   },
   {
     titulo: '(2) Ejecución de Tarea y Nota de Crédito',
     pasos: [
-      { icon: '📋', label: 'Tarea Asignada' },
-      { icon: '→', arrow: true },
-      { icon: '👨‍💻', label: 'Ejecución Estudiante' },
-      { icon: '→', arrow: true },
-      { icon: '✍️', label: 'Pyme/IPSS Acepta' },
-      { icon: '→', arrow: true },
-      { icon: '📄', label: 'Nota de Crédito Generada' },
-      { icon: '→', arrow: true },
-      { icon: '🏦', label: 'Transferencia a Finanzas IPSS' },
+      { icon: '📋', label: 'Tarea asignada' },
+      { arrow: true },
+      { icon: '👨‍💻', label: 'Ejecución' },
+      { arrow: true },
+      { icon: '✍️', label: 'Pyme/IPSS acepta' },
+      { arrow: true },
+      { icon: '📄', label: 'Nota de crédito' },
+      { arrow: true },
+      { icon: '🏦', label: 'Finanzas IPSS' },
     ],
-    color: '#d1e7dd',
+    bg: '#E6F5ED', border: '#B3DFC5',
     note: '💡 El dinero nunca pasa por manos del estudiante',
   },
   {
     titulo: '(3) Seguro de Carga Académica',
     pasos: [
-      { icon: '📅', label: 'Calendario Académico' },
-      { icon: '→', arrow: true },
-      { icon: '❓', label: '¿Semana de Exámenes?' },
-      { icon: '→', arrow: true },
-      { icon: '❄️', label: 'Congelar Asignación de Tareas' },
+      { icon: '📅', label: 'Calendario académico' },
+      { arrow: true },
+      { icon: '❓', label: '¿Semana de exámenes?' },
+      { arrow: true },
+      { icon: '❄️', label: 'Congelar tareas' },
     ],
-    color: '#fff3cd',
+    bg: '#FFFBEB', border: '#FCD34D',
     note: '🛡️ El sistema protege automáticamente el rendimiento académico',
   },
 ]
@@ -44,48 +44,28 @@ export default function ProcesoConceptual() {
   return (
     <div className="card proceso-section">
       <div className="card-title">⚙️ Procesos Operativos del Sistema</div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {PROCESOS.map((proc, i) => (
-          <div
-            key={i}
-            style={{
-              background: proc.color,
-              borderRadius: 10,
-              padding: '12px 14px',
-            }}
-          >
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#0f3460', marginBottom: 10 }}>
+          <div key={i} style={{ background: proc.bg, border: `1px solid ${proc.border}`, borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green-800)', marginBottom: 12 }}>
               {proc.titulo}
             </div>
             <div className="proceso-row">
-              {proc.pasos.map((paso, j) => (
+              {proc.pasos.map((paso, j) =>
                 paso.arrow
                   ? <span key={j} className="proceso-arrow">›</span>
                   : (
                     <div key={j} className="proceso-node">
-                      <div
-                        className="proceso-icon"
-                        style={{ background: 'rgba(255,255,255,0.7)' }}
-                      >
+                      <div className="proceso-icon" style={{ background: 'rgba(255,255,255,0.8)' }}>
                         {paso.icon}
                       </div>
                       <span className="proceso-node-label">{paso.label}</span>
                     </div>
                   )
-              ))}
+              )}
             </div>
             {proc.note && (
-              <div style={{
-                marginTop: 10,
-                fontSize: 11,
-                fontWeight: 500,
-                color: '#664d03',
-                background: 'rgba(255,255,255,0.6)',
-                borderRadius: 6,
-                padding: '5px 10px',
-                display: 'inline-block',
-              }}>
+              <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--green-800)', background: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 10px', display: 'inline-block' }}>
                 {proc.note}
               </div>
             )}

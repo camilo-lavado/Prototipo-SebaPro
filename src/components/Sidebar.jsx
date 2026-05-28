@@ -9,8 +9,8 @@ const NAV_ITEMS = [
 export default function Sidebar({ activeView, onNavigate }) {
   return (
     <div className="sidebar">
-      <div className="sidebar-logo" title="IP San Sebastián">
-        <span>🏫</span>
+      <div className="sidebar-logo" title="SebaPro Connect">
+        <img src="/logo2.jpg" alt="SebaPro Connect" style={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 8, background: 'white', padding: 2 }} />
       </div>
       {NAV_ITEMS.map(item => (
         <div

@@ -1,13 +1,13 @@
 import { useUser } from '../context/UserContext'
 
-function AsistenciaBar({ pct }) {
-  const color = pct >= 85 ? '#00b894' : pct >= 75 ? '#fdcb6e' : '#e17055'
+function AsistBar({ pct }) {
+  const color = pct >= 85 ? 'var(--green-600)' : pct >= 75 ? '#F59E0B' : '#EF4444'
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div style={{ flex: 1, height: 8, background: '#e9ecef', borderRadius: 4, overflow: 'hidden' }}>
-        <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 4, transition: 'width 0.6s' }} />
+    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+      <div style={{ flex:1, height:7, background:'var(--green-100)', borderRadius:4, overflow:'hidden' }}>
+        <div style={{ width:`${pct}%`, height:'100%', background:color, borderRadius:4, transition:'width .6s' }} />
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color, minWidth: 32 }}>{pct}%</span>
+      <span style={{ fontSize:11, fontWeight:700, color, minWidth:32 }}>{pct}%</span>
     </div>
   )
 }
@@ -15,152 +15,112 @@ function AsistenciaBar({ pct }) {
 export default function Academia() {
   const { currentUser } = useUser()
   const { asignaturas, nombre, carrera, nivel, rut } = currentUser
-
-  const promedioAsistencia = Math.round(asignaturas.reduce((a, s) => a + s.asistencia, 0) / asignaturas.length)
-  const totalCreditos = asignaturas.reduce((a, s) => a + s.creditos, 0)
+  const promAsist = Math.round(asignaturas.reduce((a,s)=>a+s.asistencia,0)/asignaturas.length)
+  const totalCred = asignaturas.reduce((a,s)=>a+s.creditos,0)
 
   return (
-    <div className="content-area" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+    <div className="content-area" style={{ gridTemplateColumns:'1fr 1fr 1fr' }}>
 
-      {/* Ficha Estudiante */}
-      <div className="card" style={{ gridColumn: '1 / -1', display: 'flex', gap: 24, alignItems: 'center' }}>
+      {/* Ficha */}
+      <div className="card col-full" style={{ display:'flex', gap:20, alignItems:'center' }}>
         <div style={{
-          width: 72, height: 72, borderRadius: '50%', flexShrink: 0,
-          background: `linear-gradient(135deg, ${currentUser.color}, #0f3460)`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white', fontSize: 24, fontWeight: 800,
-        }}>
-          {currentUser.iniciales}
+          width:68, height:68, borderRadius:'50%', flexShrink:0,
+          background:`linear-gradient(135deg, ${currentUser.color}, var(--green-800))`,
+          display:'flex', alignItems:'center', justifyContent:'center',
+          color:'white', fontSize:24, fontWeight:900,
+        }}>{currentUser.iniciales}</div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:18, fontWeight:800, color:'var(--text-1)' }}>{nombre}</div>
+          <div style={{ fontSize:13, color:'var(--text-2)', marginTop:2 }}>{carrera} · {nivel}</div>
+          <div style={{ fontSize:11, color:'var(--text-3)', marginTop:2 }}>RUT {rut} · Jornada {currentUser.jornada}</div>
         </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#0f3460' }}>{nombre}</div>
-          <div style={{ fontSize: 13, color: '#636e72', marginTop: 2 }}>{carrera} · {nivel}</div>
-          <div style={{ fontSize: 11, color: '#b2bec3', marginTop: 2 }}>RUT {rut} · Jornada {currentUser.jornada}</div>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          {[
-            { label: 'Asignaturas', value: asignaturas.length },
-            { label: 'Créditos', value: totalCreditos },
-            { label: 'Asistencia prom.', value: `${promedioAsistencia}%` },
-          ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center', padding: '10px 18px', background: '#f8f9fa', borderRadius: 10 }}>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#0f3460' }}>{s.value}</div>
-              <div style={{ fontSize: 10, color: '#636e72', fontWeight: 500, marginTop: 2 }}>{s.label}</div>
+        <div style={{ display:'flex', gap:10 }}>
+          {[['📚',asignaturas.length,'Asignaturas'],['🏅',totalCred,'Créditos'],[`${promAsist}%`,null,'Asistencia prom.']].map(([v,n,l])=>(
+            <div key={l} className="stat-box" style={{ minWidth:90 }}>
+              <div className="stat-box-value">{n ?? v}</div>
+              <div className="stat-box-label">{l}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Estado del Semestre */}
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
+      {/* Tabla asignaturas */}
+      <div className="card col-full">
         <div className="card-title">📚 Asignaturas del Semestre Actual</div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-          <thead>
-            <tr style={{ background: '#f8f9fa' }}>
-              {['Código', 'Asignatura', 'Docente', 'Horario', 'Créditos', 'Asistencia'].map(h => (
-                <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: '#636e72', textTransform: 'uppercase', letterSpacing: '0.4px' }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
+        <table className="data-table">
+          <thead><tr>
+            {['Código','Asignatura','Docente','Horario','Cred.','Asistencia'].map(h=>(
+              <th key={h}>{h}</th>
+            ))}
+          </tr></thead>
           <tbody>
-            {asignaturas.map(a => (
-              <tr key={a.codigo} style={{ borderBottom: '1px solid #f0f2f5' }}>
-                <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 11, color: '#0984e3', fontWeight: 600 }}>{a.codigo}</td>
-                <td style={{ padding: '10px 12px', fontWeight: 600, color: '#2d3436' }}>{a.nombre}</td>
-                <td style={{ padding: '10px 12px', color: '#636e72' }}>{a.docente}</td>
-                <td style={{ padding: '10px 12px', color: '#636e72', fontSize: 11 }}>{a.horario}</td>
-                <td style={{ padding: '10px 12px', textAlign: 'center', fontWeight: 700, color: '#0f3460' }}>{a.creditos}</td>
-                <td style={{ padding: '10px 12px', minWidth: 130 }}>
-                  <AsistenciaBar pct={a.asistencia} />
-                </td>
+            {asignaturas.map(a=>(
+              <tr key={a.codigo}>
+                <td style={{ fontFamily:'monospace', color:'var(--green-700)', fontWeight:700, fontSize:11 }}>{a.codigo}</td>
+                <td style={{ fontWeight:600 }}>{a.nombre}</td>
+                <td style={{ color:'var(--text-2)' }}>{a.docente}</td>
+                <td style={{ color:'var(--text-2)', fontSize:11 }}>{a.horario}</td>
+                <td style={{ textAlign:'center', fontWeight:700, color:'var(--green-800)' }}>{a.creditos}</td>
+                <td style={{ minWidth:130 }}><AsistBar pct={a.asistencia} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Semáforo Asistencia */}
+      {/* Alertas */}
       <div className="card">
         <div className="card-title">⚠️ Alertas Académicas</div>
-        {asignaturas.filter(a => a.asistencia < 80).length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '20px 0', color: '#00b894' }}>
-            <div style={{ fontSize: 32 }}>✅</div>
-            <div style={{ fontWeight: 600, marginTop: 8, fontSize: 13 }}>Sin alertas activas</div>
-            <div style={{ fontSize: 11, color: '#636e72', marginTop: 4 }}>Asistencia en buen estado</div>
+        {asignaturas.filter(a=>a.asistencia<80).length===0 ? (
+          <div style={{ textAlign:'center', padding:'20px 0', color:'var(--green-600)' }}>
+            <div style={{ fontSize:36 }}>✅</div>
+            <div style={{ fontWeight:700, marginTop:8, fontSize:13 }}>Sin alertas activas</div>
+            <div style={{ fontSize:11, color:'var(--text-2)', marginTop:4 }}>Asistencia en buen estado</div>
           </div>
-        ) : (
-          asignaturas.filter(a => a.asistencia < 80).map(a => (
-            <div key={a.codigo} style={{
-              display: 'flex', gap: 10, alignItems: 'flex-start',
-              padding: '10px 12px', background: '#fff3cd', borderRadius: 8, marginBottom: 8,
-              border: '1px solid #ffc107',
-            }}>
-              <span style={{ fontSize: 18 }}>⚠️</span>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 12 }}>{a.nombre}</div>
-                <div style={{ fontSize: 11, color: '#664d03', marginTop: 2 }}>
-                  Asistencia: {a.asistencia}% — Mínimo requerido: 80%
-                </div>
-              </div>
+        ) : asignaturas.filter(a=>a.asistencia<80).map(a=>(
+          <div key={a.codigo} style={{ display:'flex', gap:10, padding:'10px 12px', background:'#FFFBEB', borderRadius:8, border:'1px solid #FCD34D', marginBottom:8 }}>
+            <span style={{ fontSize:18 }}>⚠️</span>
+            <div>
+              <div style={{ fontWeight:600, fontSize:12 }}>{a.nombre}</div>
+              <div style={{ fontSize:11, color:'#78350F', marginTop:2 }}>Asistencia: {a.asistencia}% — Mínimo: 80%</div>
             </div>
-          ))
-        )}
-      </div>
-
-      {/* Resumen rápido */}
-      <div className="card">
-        <div className="card-title">📊 Resumen del Período</div>
-        {[
-          { label: 'Año académico', value: '2026' },
-          { label: 'Semestre', value: '1° semestre 2026' },
-          { label: 'Fecha inicio', value: '03 de marzo 2026' },
-          { label: 'Fecha término', value: '11 de julio 2026' },
-          { label: 'Semanas de clases', value: '18 semanas' },
-          { label: 'Próximos exámenes', value: '19 – 28 de mayo' },
-        ].map(r => (
-          <div key={r.label} style={{
-            display: 'flex', justifyContent: 'space-between',
-            padding: '7px 0', borderBottom: '1px solid #f0f2f5',
-            fontSize: 12,
-          }}>
-            <span style={{ color: '#636e72', fontWeight: 500 }}>{r.label}</span>
-            <span style={{ fontWeight: 700, color: '#0f3460' }}>{r.value}</span>
           </div>
         ))}
       </div>
 
-      {/* Progreso del período */}
+      {/* Resumen */}
+      <div className="card">
+        <div className="card-title">📊 Resumen del Período</div>
+        {[
+          ['Año académico','2026'],['Semestre','1° sem. 2026'],
+          ['Fecha inicio','03/03/2026'],['Fecha término','11/07/2026'],
+          ['Semanas de clases','18 semanas'],['Próximos exámenes','19 – 28 mayo'],
+        ].map(([l,v])=>(
+          <div key={l} style={{ display:'flex', justifyContent:'space-between', padding:'7px 0', borderBottom:'1px solid var(--green-50)', fontSize:12 }}>
+            <span style={{ color:'var(--text-2)', fontWeight:500 }}>{l}</span>
+            <span style={{ fontWeight:700, color:'var(--green-800)' }}>{v}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Progreso semestre */}
       <div className="card">
         <div className="card-title">🗓 Progreso del Semestre</div>
-        {(() => {
-          const total = 18, transcurridas = 11
-          const pct = Math.round((transcurridas / total) * 100)
-          return (
-            <>
-              <div style={{ fontSize: 12, color: '#636e72', marginBottom: 10 }}>
-                Semana {transcurridas} de {total} — {pct}% completado
+        {(()=>{
+          const total=18, curr=11, pct=Math.round(curr/total*100)
+          return (<>
+            <div style={{ fontSize:12, color:'var(--text-2)', marginBottom:8 }}>Semana {curr} de {total} — {pct}% completado</div>
+            <div style={{ height:12, background:'var(--green-100)', borderRadius:6, overflow:'hidden', marginBottom:14 }}>
+              <div style={{ width:`${pct}%`, height:'100%', background:'linear-gradient(90deg,var(--green-700),var(--green-500))', borderRadius:6 }} />
+            </div>
+            {[['Certamen 1',4,true],['Certamen 2',9,true],['Exámenes finales',14,false],['Cierre de actas',18,false]].map(([h,s,done])=>(
+              <div key={h} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 0', borderBottom:'1px solid var(--green-50)', fontSize:12 }}>
+                <span>{done?'✅':'🔲'}</span>
+                <span style={{ flex:1, fontWeight:done?700:400, color:done?'var(--green-800)':'var(--text-2)' }}>{h}</span>
+                <span style={{ fontSize:10, color:'var(--text-3)' }}>Sem. {s}</span>
               </div>
-              <div style={{ height: 16, background: '#e9ecef', borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
-                <div style={{ width: `${pct}%`, height: '100%', background: 'linear-gradient(90deg, #0f3460, #0984e3)', borderRadius: 8 }} />
-              </div>
-              <div style={{ fontSize: 11, color: '#636e72', fontWeight: 500 }}>Hitos del semestre:</div>
-              {[
-                { hito: 'Certamen 1', semana: 4, done: true },
-                { hito: 'Certamen 2', semana: 9, done: true },
-                { hito: 'Exámenes finales', semana: 14, done: false },
-                { hito: 'Cierre de actas', semana: 18, done: false },
-              ].map(h => (
-                <div key={h.hito} style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '6px 0', fontSize: 12, borderBottom: '1px solid #f0f2f5',
-                }}>
-                  <span>{h.done ? '✅' : '🔲'}</span>
-                  <span style={{ flex: 1, color: h.done ? '#0a3622' : '#636e72', fontWeight: h.done ? 600 : 400 }}>{h.hito}</span>
-                  <span style={{ fontSize: 10, color: '#b2bec3' }}>Sem. {h.semana}</span>
-                </div>
-              ))}
-            </>
-          )
+            ))}
+          </>)
         })()}
       </div>
 

@@ -1,110 +1,62 @@
 import { useState } from 'react'
 
-const DIAS_SEMANA = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
-const MESES = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-]
+const DIAS  = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+const EXAM_DAYS   = [19,20,21,26,27,28]
+const FROZEN_DAYS = [18,19,20,21,22,25,26,27,28,29]
 
-// Días de examen en mayo 2026
-const EXAM_DAYS = [19, 20, 21, 26, 27, 28]
-// Días congelados (sin tareas)
-const FROZEN_DAYS = [18, 19, 20, 21, 22, 25, 26, 27, 28, 29]
-
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate()
-}
-
-function getFirstDayOfMonth(year, month) {
-  // 0=Dom, convertimos a Lun=0
-  const d = new Date(year, month, 1).getDay()
-  return d === 0 ? 6 : d - 1
-}
+function firstDay(y, m) { const d = new Date(y,m,1).getDay(); return d===0?6:d-1 }
+function daysIn(y,m)    { return new Date(y,m+1,0).getDate() }
 
 export default function CalendarioAcademico({ onNotify }) {
-  const [mes, setMes] = useState(4)  // Mayo = índice 4
-  const [anio] = useState(2026)
-  const hoy = 28  // día actual simulado
+  const [mes, setMes] = useState(4)
+  const anio = 2026, hoy = 28
 
-  const totalDias = getDaysInMonth(anio, mes)
-  const primerDia = getFirstDayOfMonth(anio, mes)
-  const isExamMes = mes === 4  // solo mayo tiene exámenes simulados
+  const blanks = firstDay(anio, mes)
+  const total  = daysIn(anio, mes)
+  const celdas = [...Array(blanks).fill(null), ...Array.from({length:total},(_,i)=>i+1)]
 
-  const celdas = []
-  for (let i = 0; i < primerDia; i++) {
-    celdas.push(null)
-  }
-  for (let d = 1; d <= totalDias; d++) {
-    celdas.push(d)
-  }
+  const isExamMes   = mes === 4
+  const semCongelada = isExamMes && FROZEN_DAYS.includes(hoy)
 
-  const getClass = (d) => {
+  const getClass = d => {
     if (!d) return 'empty'
     if (d === hoy && mes === 4) return 'today'
-    if (isExamMes && EXAM_DAYS.includes(d)) return 'exam'
+    if (isExamMes && EXAM_DAYS.includes(d))   return 'exam'
     if (isExamMes && FROZEN_DAYS.includes(d)) return 'frozen'
     return ''
   }
 
-  const semanaCongelada = isExamMes && FROZEN_DAYS.includes(hoy)
-
   return (
-    <div className="card calendar-card" style={{ gridColumn: '1 / -1' }}>
-      <div className="card-title">
-        📅 Calendario Académico
-      </div>
+    <div className="card col-full" style={{ gridColumn: '1 / -1' }}>
+      <div className="card-title">📅 Calendario Académico</div>
 
-      <div className="calendar-header">
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => setMes(p => Math.max(p - 1, 0))}
-        >
-          ‹
-        </button>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#0f3460' }}>
-          {MESES[mes]} {anio}
-        </span>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => setMes(p => Math.min(p + 1, 11))}
-        >
-          ›
-        </button>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 12 }}>
+        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.max(p-1,0))}>‹</button>
+        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--green-800)' }}>{MESES[mes]} {anio}</span>
+        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.min(p+1,11))}>›</button>
       </div>
 
       <div className="cal-grid">
-        {DIAS_SEMANA.map(d => (
-          <div key={d} className="cal-hdr">{d}</div>
-        ))}
-        {celdas.map((d, i) => (
-          <div key={i} className={`cal-day ${getClass(d)}`}>
-            {d || ''}
+        {DIAS.map(d  => <div key={d}  className="cal-hdr">{d}</div>)}
+        {celdas.map((d,i) => <div key={i} className={`cal-day ${getClass(d)}`}>{d||''}</div>)}
+      </div>
+
+      <div className="exam-legend">
+        {[['var(--green-700)','Hoy'],['#FCA5A5','Semana de exámenes'],['#FDE68A','Tareas congeladas']].map(([c,l])=>(
+          <div key={l} className="legend-item">
+            <div className="legend-dot-sm" style={{ background: c }} />
+            <span>{l}</span>
           </div>
         ))}
       </div>
 
-      <div className="exam-legend">
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#0984e3' }} />
-          <span>Hoy</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#fee2e2' }} />
-          <span>Semana exámenes</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#fef3c7' }} />
-          <span>Tareas congeladas</span>
-        </div>
-      </div>
-
-      {semanaCongelada && (
-        <div className="seguro-alert">
-          <span style={{ fontSize: 20 }}>🛡️</span>
+      {semCongelada && (
+        <div className="seguro-alert" style={{ marginTop: 12 }}>
+          <span style={{ fontSize: 22 }}>🛡️</span>
           <div>
-            <strong>Seguro de Carga Académica activado</strong>
-            <br />
-            Esta semana es de exámenes. La postulación a nuevas tareas está congelada automáticamente. ¡Concéntrate en tus notas!
+            <strong>Seguro de Carga Académica activado</strong><br />
+            Semana de exámenes. La postulación a tareas está congelada automáticamente. ¡Concéntrate en tus notas!
           </div>
         </div>
       )}

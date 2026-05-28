@@ -1,70 +1,108 @@
-function getSemaforoClass(pct) {
-  if (pct >= 100) return 'green'
-  if (pct >= 50)  return 'yellow'
-  return 'red'
-}
-
-function getSemaforoLabel(pct) {
-  if (pct >= 100) return '✅ Cuota 100% cubierta por SebaPro'
-  if (pct >= 50)  return '⚠️ Cuota parcialmente cubierta'
-  return '🔴 Cuota pendiente — sigue completando tareas'
-}
-
-export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restante, porcentaje }) {
-  const color = getSemaforoClass(porcentaje)
+// Donut SVG helper
+function Donut({ pct, size = 110, stroke = 14 }) {
+  const r = (size - stroke) / 2
+  const circ = 2 * Math.PI * r
+  const dash = (pct / 100) * circ
+  const color = pct >= 100 ? '#2E7D52' : pct >= 50 ? '#3A9E68' : '#F39C12'
 
   return (
-    <div className="card financial-card">
-      <div className="card-title">
-        💰 Mi Estado Financiero Actual
-      </div>
+    <svg width={size} height={size} className="donut-svg" style={{ transform: 'rotate(-90deg)' }}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#E6F5ED" strokeWidth={stroke} />
+      <circle
+        cx={size/2} cy={size/2} r={r} fill="none"
+        stroke={color} strokeWidth={stroke}
+        strokeDasharray={`${dash} ${circ}`}
+        strokeLinecap="round"
+        style={{ transition: 'stroke-dasharray 1s cubic-bezier(0.4,0,0.2,1)' }}
+      />
+    </svg>
+  )
+}
 
-      {/* Semáforo / barra de progreso */}
-      <div className="semaforo-wrap">
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#636e72' }}>
-            Progreso del Arancel Mensual
-          </span>
-          <span style={{ fontSize: 12, fontWeight: 700, color: color === 'green' ? '#00b894' : color === 'yellow' ? '#e67e22' : '#e17055' }}>
-            {porcentaje}%
-          </span>
-        </div>
-        <div className="semaforo-track">
-          <div
-            className={`semaforo-fill ${color}`}
-            style={{ width: `${Math.min(porcentaje, 100)}%` }}
-          >
-            {porcentaje >= 20 && (
-              <span className="semaforo-fill-label">{porcentaje}%</span>
-            )}
-          </div>
-        </div>
-        <div className="semaforo-labels">
-          <span>0%</span>
-          <span style={{ fontSize: 10, color: '#636e72' }}>{getSemaforoLabel(porcentaje)}</span>
-          <span>100%</span>
-        </div>
-      </div>
+const LEGEND_COLORS = ['#1A5C38', '#3A9E68', '#7FDBA4']
 
-      {/* Montos */}
-      <div className="amounts-grid">
-        <div className="amount-box">
-          <div className="amount-box-label">Monto Original de la Cuota</div>
-          <div className="amount-box-value original">
-            ${montoCuota.toLocaleString('es-CL')} CLP
+export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restante, porcentaje }) {
+  const categorias = [
+    { nombre: 'Micro-tareas campus', valor: Math.round(creditoAcumulado * 0.45) },
+    { nombre: 'Tutorías académicas', valor: Math.round(creditoAcumulado * 0.35) },
+    { nombre: 'Servicios externos', valor: Math.round(creditoAcumulado * 0.20) },
+  ]
+
+  const statusLabel = porcentaje >= 100
+    ? '✅ Arancel completamente cubierto'
+    : porcentaje >= 50
+    ? '⚡ Más de la mitad cubierto'
+    : '⏳ Sigue completando tareas'
+
+  return (
+    <div className="card col-full">
+      <div className="card-title">💰 Mis Créditos</div>
+
+      <div style={{ display: 'flex', gap: 20, alignItems: 'stretch', flexWrap: 'wrap' }}>
+
+        {/* Tarjeta verde hero */}
+        <div className="hero-card" style={{ flex: '1 1 220px', minWidth: 200 }}>
+          <div className="hero-label">Total acumulado por SebaPro</div>
+          <div className="hero-amount">${creditoAcumulado.toLocaleString('es-CL')}</div>
+          <div className="hero-sub" style={{ marginBottom: 16 }}>Nota de crédito automática · {statusLabel}</div>
+          <div className="progress-bar-wrap">
+            <div className="progress-track" style={{ flex: 1 }}>
+              <div className="progress-fill" style={{ width: `${Math.min(porcentaje, 100)}%` }} />
+            </div>
+            <span className="progress-pct">{porcentaje}%</span>
           </div>
         </div>
-        <div className="amount-box" style={{ background: '#d1e7dd' }}>
-          <div className="amount-box-label">Monto Acumulado por SebaPro<br/>(Nota de Crédito Automática)</div>
-          <div className="amount-box-value acumulado">
-            ${creditoAcumulado.toLocaleString('es-CL')} CLP
+
+        {/* Donut chart */}
+        <div style={{ flex: '1 1 200px', minWidth: 180, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
+          <div className="donut-wrap">
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <Donut pct={porcentaje} />
+              <div style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+              }}>
+                <div className="donut-pct">{porcentaje}%</div>
+                <div className="donut-pct-label">cubierto</div>
+              </div>
+            </div>
+            <div className="donut-legend">
+              {categorias.map((c, i) => (
+                <div key={c.nombre} className="legend-row">
+                  <div className="legend-dot" style={{ background: LEGEND_COLORS[i] }} />
+                  <span className="legend-name">{c.nombre}</span>
+                  <span className="legend-val">${c.valor.toLocaleString('es-CL')}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="amount-box" style={{ background: '#fff3cd' }}>
-          <div className="amount-box-label">Monto Restante a Pagar</div>
-          <div className="amount-box-value restante">
-            ${restante.toLocaleString('es-CL')} CLP
+
+        {/* Resumen numérico */}
+        <div style={{ flex: '1 1 180px', minWidth: 160, display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+            Resumen del mes
           </div>
+          {[
+            { label: 'Cuota mensual', val: `$${montoCuota.toLocaleString('es-CL')}`, color: 'var(--text-2)' },
+            { label: 'Abonado por SebaPro', val: `$${creditoAcumulado.toLocaleString('es-CL')}`, color: 'var(--green-700)' },
+            { label: 'Restante a pagar', val: `$${restante.toLocaleString('es-CL')}`, color: restante === 0 ? 'var(--green-700)' : '#C47F00' },
+          ].map(r => (
+            <div key={r.label} style={{
+              display: 'flex', justifyContent: 'space-between',
+              padding: '8px 12px', background: 'var(--green-50)',
+              borderRadius: 8, alignItems: 'center',
+            }}>
+              <span style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500 }}>{r.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 800, color: r.color }}>{r.val}</span>
+            </div>
+          ))}
+          {restante === 0 && (
+            <div style={{ background: '#E6F5ED', border: '1px solid #B3DFC5', borderRadius: 8, padding: '8px 12px', fontSize: 11, color: '#0A3622', fontWeight: 600, textAlign: 'center' }}>
+              🎉 ¡Arancel completamente cubierto!
+            </div>
+          )}
         </div>
       </div>
     </div>
