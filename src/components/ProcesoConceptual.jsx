@@ -1,49 +1,69 @@
+import {
+  AcademicCapIcon,
+  UserIcon,
+  CheckBadgeIcon,
+  ClipboardDocumentCheckIcon,
+  ComputerDesktopIcon,
+  PencilSquareIcon,
+  DocumentTextIcon,
+  BuildingLibraryIcon,
+  CalendarDaysIcon,
+  QuestionMarkCircleIcon,
+  LockClosedIcon,
+  CogIcon,
+  LightBulbIcon,
+  ShieldCheckIcon,
+} from '@heroicons/react/24/outline'
+
 const PROCESOS = [
   {
     titulo: '(1) Validación de Competencias',
     pasos: [
-      { icon: '🎓', label: 'Habilidades del estudiante' },
+      { Icon: AcademicCapIcon, label: 'Habilidades del estudiante' },
       { arrow: true },
-      { icon: '👨‍💼', label: 'Director de programa' },
+      { Icon: UserIcon, label: 'Director de programa' },
       { arrow: true },
-      { icon: '✅', label: 'Aprobado para servicio' },
+      { Icon: CheckBadgeIcon, label: 'Aprobado para servicio' },
     ],
     bg: 'var(--green-50)', border: 'var(--green-100)',
   },
   {
     titulo: '(2) Ejecución de Tarea y Nota de Crédito',
     pasos: [
-      { icon: '📋', label: 'Tarea asignada' },
+      { Icon: ClipboardDocumentCheckIcon, label: 'Tarea asignada' },
       { arrow: true },
-      { icon: '👨‍💻', label: 'Ejecución' },
+      { Icon: ComputerDesktopIcon, label: 'Ejecución' },
       { arrow: true },
-      { icon: '✍️', label: 'Pyme/IPSS acepta' },
+      { Icon: PencilSquareIcon, label: 'Pyme/IPSS acepta' },
       { arrow: true },
-      { icon: '📄', label: 'Nota de crédito' },
+      { Icon: DocumentTextIcon, label: 'Nota de crédito' },
       { arrow: true },
-      { icon: '🏦', label: 'Finanzas IPSS' },
+      { Icon: BuildingLibraryIcon, label: 'Finanzas IPSS' },
     ],
     bg: '#E6F5ED', border: '#B3DFC5',
-    note: '💡 El dinero nunca pasa por manos del estudiante',
+    note: { NoteIcon: LightBulbIcon, text: 'El dinero nunca pasa por manos del estudiante' },
   },
   {
     titulo: '(3) Seguro de Carga Académica',
     pasos: [
-      { icon: '📅', label: 'Calendario académico' },
+      { Icon: CalendarDaysIcon, label: 'Calendario académico' },
       { arrow: true },
-      { icon: '❓', label: '¿Semana de exámenes?' },
+      { Icon: QuestionMarkCircleIcon, label: '¿Semana de exámenes?' },
       { arrow: true },
-      { icon: '❄️', label: 'Congelar tareas' },
+      { Icon: LockClosedIcon, label: 'Congelar tareas' },
     ],
     bg: '#FFFBEB', border: '#FCD34D',
-    note: '🛡️ El sistema protege automáticamente el rendimiento académico',
+    note: { NoteIcon: ShieldCheckIcon, text: 'El sistema protege automáticamente el rendimiento académico' },
   },
 ]
 
 export default function ProcesoConceptual() {
   return (
     <div className="card proceso-section">
-      <div className="card-title">⚙️ Procesos Operativos del Sistema</div>
+      <div className="card-title">
+        <CogIcon style={{ width: 18, height: 18, display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+        Procesos Operativos del Sistema
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {PROCESOS.map((proc, i) => (
           <div key={i} style={{ background: proc.bg, border: `1px solid ${proc.border}`, borderRadius: 12, padding: '14px 16px' }}>
@@ -56,8 +76,8 @@ export default function ProcesoConceptual() {
                   ? <span key={j} className="proceso-arrow">›</span>
                   : (
                     <div key={j} className="proceso-node">
-                      <div className="proceso-icon" style={{ background: 'rgba(255,255,255,0.8)' }}>
-                        {paso.icon}
+                      <div className="proceso-icon" style={{ background: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <paso.Icon className="proceso-icon-svg" style={{ width: 22, height: 22 }} />
                       </div>
                       <span className="proceso-node-label">{paso.label}</span>
                     </div>
@@ -65,8 +85,9 @@ export default function ProcesoConceptual() {
               )}
             </div>
             {proc.note && (
-              <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--green-800)', background: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 10px', display: 'inline-block' }}>
-                {proc.note}
+              <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--green-800)', background: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 10px', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                <proc.note.NoteIcon style={{ width: 16, height: 16, flexShrink: 0 }} />
+                {proc.note.text}
               </div>
             )}
           </div>

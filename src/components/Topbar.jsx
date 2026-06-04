@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useUser } from '../context/UserContext'
+import Avatar from './Avatar'
+import { CheckIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 
 export default function Topbar({ onLogout }) {
   const { currentUser, setCurrentUser, USERS } = useUser()
@@ -19,9 +21,9 @@ export default function Topbar({ onLogout }) {
           <div className="user-chip" onClick={() => setOpen(o => !o)}>
             <div
               className="user-avatar"
-              style={{ background: `linear-gradient(135deg, ${currentUser.color}, #1A5C38)` }}
+                style={{ background: `linear-gradient(135deg, ${currentUser.color}, #1A5C38)` }}
             >
-              {currentUser.iniciales}
+              <Avatar user={currentUser} size={32} />
             </div>
             <span>{currentUser.nombre.split(' ').slice(0, 2).join(' ')}</span>
             <span style={{ fontSize: 10, opacity: 0.5 }}>▾</span>
@@ -51,21 +53,14 @@ export default function Topbar({ onLogout }) {
                       marginBottom: 4, transition: 'background 0.15s',
                     }}
                   >
-                    <div style={{
-                      width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-                      background: `linear-gradient(135deg, ${u.color}, #1A5C38)`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'white', fontSize: 13, fontWeight: 800,
-                    }}>
-                      {u.iniciales}
-                    </div>
+                    <Avatar user={u} size={36} />
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#0D3320' }}>{u.nombre}</div>
                       <div style={{ fontSize: 10, color: '#4A7260' }}>
                         {u.carrera.split(' ').slice(0, 3).join(' ')} · {u.nivel}
                       </div>
                     </div>
-                    {currentUser.id === u.id && <span style={{ color: '#2E7D52', fontSize: 16 }}>✓</span>}
+                    {currentUser.id === u.id && <CheckIcon style={{ width: 16, height: 16, color: '#2E7D52', flexShrink: 0 }} />}
                   </div>
                 ))}
 
@@ -76,9 +71,11 @@ export default function Topbar({ onLogout }) {
                       width: '100%', padding: '9px', borderRadius: 8, border: 'none',
                       background: '#FEE2E2', color: '#B91C1C', fontSize: 12,
                       fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                     }}
                   >
-                    ← Cerrar sesión
+                    <ArrowRightOnRectangleIcon style={{ width: 14, height: 14 }} />
+                    Cerrar sesión
                   </button>
                 </div>
               </div>

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useUser } from '../context/UserContext'
+import Avatar from './Avatar'
+import { LockOpenIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 export default function LoginScreen({ onLogin }) {
   const { USERS, currentUser, setCurrentUser } = useUser()
@@ -14,6 +16,19 @@ export default function LoginScreen({ onLogin }) {
 
   return (
     <div className="login-screen">
+      <style>{`
+        @media (max-width: 480px) {
+          .login-card {
+            width: calc(100% - 32px);
+            max-width: 400px;
+            padding: 24px 20px;
+          }
+          .login-user-btn {
+            padding: 9px 12px;
+            gap: 10px;
+          }
+        }
+      `}</style>
       {/* Logo superior */}
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{
@@ -46,14 +61,7 @@ export default function LoginScreen({ onLogin }) {
                   className={`login-user-btn ${currentUser.id === u.id ? 'selected' : ''}`}
                   onClick={() => setCurrentUser(u)}
                 >
-                  <div style={{
-                    width: 42, height: 42, borderRadius: '50%', flexShrink: 0,
-                    background: `linear-gradient(135deg, ${u.color}, #1A5C38)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontSize: 14, fontWeight: 800,
-                  }}>
-                    {u.iniciales}
-                  </div>
+                  <Avatar user={u} size={42} />
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#0D3320' }}>{u.nombre}</div>
                     <div style={{ fontSize: 11, color: '#4A7260', marginTop: 1 }}>
@@ -61,7 +69,7 @@ export default function LoginScreen({ onLogin }) {
                     </div>
                   </div>
                   {currentUser.id === u.id && (
-                    <span style={{ color: '#2E7D52', fontSize: 18 }}>✓</span>
+                    <CheckIcon style={{ width: 18, height: 18, color: '#2E7D52', flexShrink: 0 }} />
                   )}
                 </div>
               ))}
@@ -83,14 +91,7 @@ export default function LoginScreen({ onLogin }) {
               padding: '10px 12px', background: '#F0F9F4',
               borderRadius: 10, marginBottom: 18, border: '1px solid #B3DFC5',
             }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: '50%',
-                background: `linear-gradient(135deg, ${currentUser.color}, #1A5C38)`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontSize: 13, fontWeight: 800, flexShrink: 0,
-              }}>
-                {currentUser.iniciales}
-              </div>
+              <Avatar user={currentUser} size={36} />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#0D3320' }}>{currentUser.nombre}</div>
                 <div style={{ fontSize: 11, color: '#4A7260' }}>{currentUser.rut}</div>
@@ -104,8 +105,8 @@ export default function LoginScreen({ onLogin }) {
               </button>
             </div>
 
-            <div style={{ background:'#F0F9F4', border:'1px solid #B3DFC5', borderRadius:8, padding:'9px 12px', fontSize:11, color:'#2E7D52', fontWeight:500, marginBottom:12 }}>
-              🔓 Modo demo — sin contraseña requerida
+            <div style={{ background:'#F0F9F4', border:'1px solid #B3DFC5', borderRadius:8, padding:'9px 12px', fontSize:11, color:'#2E7D52', fontWeight:500, marginBottom:12, display:'flex', alignItems:'center', gap:6 }}>
+              <LockOpenIcon style={{ width:14, height:14, flexShrink:0 }} /> Modo demo — sin contraseña requerida
             </div>
 
             <button type="submit" className="login-btn">

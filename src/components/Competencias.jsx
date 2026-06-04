@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useUser } from '../context/UserContext'
+import { TrophyIcon, EllipsisHorizontalCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
+import { CheckIcon } from '@heroicons/react/24/solid'
 
 export default function Competencias() {
   const { currentUser } = useUser()
@@ -36,7 +38,7 @@ export default function Competencias() {
   return (
     <>
       <div className="card competencias-card">
-        <div className="card-title">🏅 Validación de Competencias</div>
+        <div className="card-title"><TrophyIcon style={{ width: 20, height: 20, display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Validación de Competencias</div>
 
         <div style={{ marginBottom: 12 }}>
           <span style={{ fontSize: 10, color: '#636e72', fontWeight: 500 }}>
@@ -51,7 +53,10 @@ export default function Competencias() {
           >
             <span>{comp.nombre}</span>
             <div className={`comp-check ${comp.validada ? 'ok' : 'pending'}`}>
-              {comp.validada ? '✓' : '○'}
+              {comp.validada
+                ? <CheckIcon style={{ width: 14, height: 14, color: '#16a34a' }} />
+                : <EllipsisHorizontalCircleIcon style={{ width: 14, height: 14, color: '#9CA3AF' }} />
+              }
             </div>
           </div>
         ))}
@@ -61,7 +66,7 @@ export default function Competencias() {
             + Declarar Habilidad
           </button>
           <button className="btn btn-secondary btn-sm" onClick={solicitarValidacion}>
-            📨 Solicitar Validación
+            <EnvelopeIcon style={{ width: 16, height: 16, display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Solicitar Validación
           </button>
         </div>
 
@@ -75,7 +80,7 @@ export default function Competencias() {
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">🏅 Declarar Nueva Competencia</div>
+            <div className="modal-title"><TrophyIcon style={{ width: 20, height: 20, display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Declarar Nueva Competencia</div>
             <div className="form-group">
               <label>Nombre de la Habilidad Técnica</label>
               <input

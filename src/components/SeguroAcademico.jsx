@@ -1,4 +1,19 @@
+import { useState } from 'react'
 import { useUser } from '../context/UserContext'
+import DemoModal from './DemoModal'
+import {
+  ShieldCheckIcon,
+  CheckBadgeIcon,
+  MinusCircleIcon,
+  LightBulbIcon,
+  BuildingOffice2Icon,
+  DocumentArrowDownIcon,
+  PhoneIcon,
+  ClipboardDocumentListIcon,
+  ExclamationTriangleIcon,
+  CheckIcon,
+} from '@heroicons/react/24/outline'
+import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid'
 
 const INCIDENTES = [
   { fecha:'2025-10-14', tipo:'Accidente en Campus', desc:'Caída en escalera — atención clínica IPSS', estado:'Cerrado', monto:'$85.000' },
@@ -8,9 +23,11 @@ const INCIDENTES = [
 export default function SeguroAcademico() {
   const { currentUser } = useUser()
   const { seguro, nombre } = currentUser
+  const [demo, setDemo] = useState(null)
 
   return (
     <div className="content-area" style={{ gridTemplateColumns:'1fr 1fr' }}>
+      <DemoModal open={!!demo} onClose={() => setDemo(null)} feature={demo} />
 
       {/* Póliza hero */}
       <div className="col-full" style={{
@@ -18,7 +35,7 @@ export default function SeguroAcademico() {
         borderRadius:20, padding:'22px 26px', color:'white',
         display:'flex', gap:20, alignItems:'center', boxShadow:'var(--shadow-lg)',
       }}>
-        <span style={{ fontSize:48 }}>🛡️</span>
+        <ShieldCheckIcon style={{ width:48,height:48,color:'white',flexShrink:0 }} />
         <div style={{ flex:1 }}>
           <div style={{ fontSize:11,fontWeight:700,color:'rgba(255,255,255,0.5)',letterSpacing:1,textTransform:'uppercase',marginBottom:4 }}>Seguro Académico Activo</div>
           <div style={{ fontSize:20,fontWeight:900 }}>{seguro.tipo}</div>
@@ -28,17 +45,22 @@ export default function SeguroAcademico() {
           <div style={{ fontSize:10,color:'rgba(255,255,255,0.4)',marginBottom:2 }}>N° Póliza</div>
           <div style={{ fontFamily:'monospace',fontSize:13,fontWeight:700,color:'rgba(255,255,255,0.85)' }}>{seguro.poliza}</div>
           <div style={{ fontSize:11,color:'rgba(255,255,255,0.4)',marginTop:6 }}>Vigente hasta {new Date(seguro.vigencia).toLocaleDateString('es-CL')}</div>
-          <div style={{ marginTop:8,display:'inline-block',background:'var(--green-500)',color:'white',borderRadius:20,padding:'4px 14px',fontSize:11,fontWeight:700 }}>✓ ACTIVO</div>
+          <div style={{ marginTop:8,display:'inline-flex',alignItems:'center',gap:4,background:'var(--green-500)',color:'white',borderRadius:20,padding:'4px 14px',fontSize:11,fontWeight:700 }}>
+            <CheckIcon style={{ width:12,height:12 }} />ACTIVO
+          </div>
         </div>
       </div>
 
       {/* Beneficios */}
       <div className="card">
-        <div className="card-title">✅ Cobertura y Beneficios</div>
+        <div className="card-title"><CheckBadgeIcon style={{ width:16,height:16,display:'inline',verticalAlign:'middle',marginRight:6 }} />Cobertura y Beneficios</div>
         {seguro.beneficios.map((b,i)=>(
           <div key={i} style={{ display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid var(--green-50)' }}>
-            <div style={{ width:28,height:28,borderRadius:'50%',flexShrink:0,background:b.activo?'var(--green-100)':'#F1F5F9',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14 }}>
-              {b.activo?'✅':'⬜'}
+            <div style={{ width:28,height:28,borderRadius:'50%',flexShrink:0,background:b.activo?'var(--green-100)':'#F1F5F9',display:'flex',alignItems:'center',justifyContent:'center' }}>
+              {b.activo
+                ? <CheckCircleSolid style={{ width:18,height:18,color:'var(--green-600)' }} />
+                : <MinusCircleIcon style={{ width:18,height:18,color:'#94A3B8' }} />
+              }
             </div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13,fontWeight:600,color:b.activo?'var(--text-1)':'#94A3B8' }}>{b.nombre}</div>
@@ -48,15 +70,16 @@ export default function SeguroAcademico() {
           </div>
         ))}
         {seguro.beneficios.some(b=>!b.activo)&&(
-          <div style={{ marginTop:12,padding:'10px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--green-800)',fontWeight:500 }}>
-            💡 Completa tu perfil SebaPro para acceder a cobertura de micro-tareas externas.
+          <div style={{ marginTop:12,padding:'10px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--green-800)',fontWeight:500,display:'flex',alignItems:'flex-start',gap:6 }}>
+            <LightBulbIcon style={{ width:14,height:14,flexShrink:0,marginTop:1 }} />
+            Completa tu perfil SebaPro para acceder a cobertura de micro-tareas externas.
           </div>
         )}
       </div>
 
       {/* Datos aseguradora */}
       <div className="card">
-        <div className="card-title">🏢 Datos de la Aseguradora</div>
+        <div className="card-title"><BuildingOffice2Icon style={{ width:16,height:16,display:'inline',verticalAlign:'middle',marginRight:6 }} />Datos de la Aseguradora</div>
         {[
           ['Aseguradora',seguro.aseguradora],
           ['Tomador','Instituto Profesional San Sebastián'],
@@ -73,14 +96,18 @@ export default function SeguroAcademico() {
           </div>
         ))}
         <div style={{ marginTop:14,display:'flex',gap:8 }}>
-          <button className="btn btn-primary btn-sm">📄 Descargar Póliza PDF</button>
-          <button className="btn btn-outline btn-sm">📞 Declarar Siniestro</button>
+          <button className="btn btn-primary btn-sm" style={{ display:'flex',alignItems:'center',gap:6 }} onClick={() => setDemo('Descargar Póliza PDF')}>
+            <DocumentArrowDownIcon style={{ width:16,height:16 }} />Descargar Póliza PDF
+          </button>
+          <button className="btn btn-outline btn-sm" style={{ display:'flex',alignItems:'center',gap:6 }} onClick={() => setDemo('Declarar Siniestro')}>
+            <PhoneIcon style={{ width:16,height:16 }} />Declarar Siniestro
+          </button>
         </div>
       </div>
 
       {/* Historial */}
       <div className="card col-full">
-        <div className="card-title">📋 Historial de Uso del Seguro</div>
+        <div className="card-title"><ClipboardDocumentListIcon style={{ width:16,height:16,display:'inline',verticalAlign:'middle',marginRight:6 }} />Historial de Uso del Seguro</div>
         <table className="data-table">
           <thead><tr>
             {['Fecha','Tipo de Evento','Descripción','Monto Cubierto','Estado'].map(h=><th key={h}>{h}</th>)}
@@ -97,8 +124,9 @@ export default function SeguroAcademico() {
             ))}
           </tbody>
         </table>
-        <div style={{ marginTop:10,padding:'9px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--text-2)' }}>
-          ⚠️ Para declarar un siniestro contacta a Bienestar Estudiantil o llama al 600 123 4567 (24/7).
+        <div style={{ marginTop:10,padding:'9px 12px',background:'var(--green-50)',borderRadius:8,fontSize:11,color:'var(--text-2)',display:'flex',alignItems:'flex-start',gap:6 }}>
+          <ExclamationTriangleIcon style={{ width:14,height:14,flexShrink:0,marginTop:1 }} />
+          Para declarar un siniestro contacta a Bienestar Estudiantil o llama al 600 123 4567 (24/7).
         </div>
       </div>
 

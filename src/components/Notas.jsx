@@ -1,4 +1,12 @@
 import { useState } from 'react'
+import {
+  ChartBarIcon,
+  ExclamationTriangleIcon,
+  DocumentTextIcon,
+  LightBulbIcon,
+  ArrowTrendingUpIcon,
+} from '@heroicons/react/24/outline'
+import { CheckCircleIcon as CheckCircleSolid } from '@heroicons/react/24/solid'
 import { useUser } from '../context/UserContext'
 
 function NotaCell({ value }) {
@@ -18,6 +26,12 @@ export default function Notas() {
   const aprobadas   = notas.filter(n=>prom(n)>=4.0).length
   const enRiesgo    = notas.filter(n=>prom(n)<4.0).length
 
+  const kpis = [
+    { label:'Promedio parcial', value:promParcial, Icon: ChartBarIcon,     bg:'var(--green-50)', border:'var(--green-100)', color:'var(--green-800)' },
+    { label:'Aprobadas',        value:`${aprobadas}/${notas.length}`, Icon: CheckCircleSolid, bg:'#E6F5ED', border:'#B3DFC5', color:'var(--green-700)' },
+    { label:'En riesgo',        value:enRiesgo,    Icon: ExclamationTriangleIcon, bg:'#FFFBEB', border:'#FCD34D', color:'#92400E' },
+  ]
+
   return (
     <div className="content-area" style={{ gridTemplateColumns:'1fr 1fr 1fr' }}>
 
@@ -35,21 +49,22 @@ export default function Notas() {
       </div>
 
       {/* KPIs */}
-      {[
-        { label:'Promedio parcial', value:promParcial, icon:'📊', bg:'var(--green-50)', border:'var(--green-100)', color:'var(--green-800)' },
-        { label:'Aprobadas',        value:`${aprobadas}/${notas.length}`, icon:'✅', bg:'#E6F5ED', border:'#B3DFC5', color:'var(--green-700)' },
-        { label:'En riesgo',        value:enRiesgo,   icon:'⚠️', bg:'#FFFBEB', border:'#FCD34D', color:'#92400E' },
-      ].map(s=>(
-        <div key={s.label} className="card" style={{ textAlign:'center', background:s.bg, border:`1.5px solid ${s.border}` }}>
-          <div style={{ fontSize:28 }}>{s.icon}</div>
-          <div style={{ fontSize:26, fontWeight:900, color:s.color, margin:'6px 0' }}>{s.value}</div>
-          <div style={{ fontSize:11, color:'var(--text-2)', fontWeight:600 }}>{s.label}</div>
+      {kpis.map(({ label, value, Icon, bg, border, color }) => (
+        <div key={label} className="card" style={{ textAlign:'center', background:bg, border:`1.5px solid ${border}` }}>
+          <div style={{ display:'flex', justifyContent:'center', marginBottom:4 }}>
+            <Icon style={{ width:28, height:28, color }} />
+          </div>
+          <div style={{ fontSize:26, fontWeight:900, color, margin:'6px 0' }}>{value}</div>
+          <div style={{ fontSize:11, color:'var(--text-2)', fontWeight:600 }}>{label}</div>
         </div>
       ))}
 
       {/* Tabla */}
       <div className="card col-full">
-        <div className="card-title">📝 Calificaciones — {semestre}</div>
+        <div className="card-title">
+          <DocumentTextIcon style={{ width:20, height:20, display:'inline', verticalAlign:'middle', marginRight:6 }} />
+          Calificaciones — {semestre}
+        </div>
         <table className="data-table">
           <thead><tr>
             {['Asignatura','C1','C2','Prom.','Examen','Final','Estado'].map(h=>(
@@ -58,7 +73,7 @@ export default function Notas() {
           </tr></thead>
           <tbody>
             {notas.map((n,i)=>{
-              const p = prom(n), aprobada = p>=4.0
+              const p = prom(n)
               return (
                 <tr key={i}>
                   <td style={{ fontWeight:600 }}>{n.asignatura}</td>
@@ -71,7 +86,10 @@ export default function Notas() {
                   <td style={{ textAlign:'center' }}><span style={{ fontSize:10,color:'var(--text-3)' }}>Pendiente</span></td>
                   <td style={{ textAlign:'center' }}>
                     <span className={`badge ${n.estado==='en riesgo'?'congelada':n.estado==='en curso'?'ejecucion':'finalizada'}`}>
-                      {n.estado==='en riesgo'?'⚠️ Riesgo':n.estado==='en curso'?'En curso':'Aprobada'}
+                      {n.estado==='en riesgo'
+                        ? <><ExclamationTriangleIcon style={{ width:12, height:12, display:'inline', verticalAlign:'middle', marginRight:3 }} />Riesgo</>
+                        : n.estado==='en curso' ? 'En curso' : 'Aprobada'
+                      }
                     </span>
                   </td>
                 </tr>
@@ -79,14 +97,18 @@ export default function Notas() {
             })}
           </tbody>
         </table>
-        <div style={{ marginTop:10, padding:'9px 12px', background:'var(--green-50)', borderRadius:8, fontSize:11, color:'var(--text-2)' }}>
-          💡 Ponderación: C1 (30%) + C2 (30%) + Examen Final (40%). Nota mínima: 4.0
+        <div style={{ marginTop:10, padding:'9px 12px', background:'var(--green-50)', borderRadius:8, fontSize:11, color:'var(--text-2)', display:'flex', alignItems:'center', gap:5 }}>
+          <LightBulbIcon style={{ width:14, height:14, flexShrink:0 }} />
+          Ponderación: C1 (30%) + C2 (30%) + Examen Final (40%). Nota mínima: 4.0
         </div>
       </div>
 
       {/* Gráfico */}
       <div className="card col-full">
-        <div className="card-title">📈 Evolución por Asignatura</div>
+        <div className="card-title">
+          <ArrowTrendingUpIcon style={{ width:20, height:20, display:'inline', verticalAlign:'middle', marginRight:6 }} />
+          Evolución por Asignatura
+        </div>
         <div style={{ display:'flex', gap:16, alignItems:'flex-end', padding:'8px 0', overflowX:'auto' }}>
           {notas.map((n,i)=>{
             const p=prom(n), hPct=(p/7)*100

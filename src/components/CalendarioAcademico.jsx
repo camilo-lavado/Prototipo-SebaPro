@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CalendarDaysIcon, ChevronLeftIcon, ChevronRightIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
 
 const DIAS  = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
@@ -29,12 +30,31 @@ export default function CalendarioAcademico({ onNotify }) {
 
   return (
     <div className="card col-full" style={{ gridColumn: '1 / -1' }}>
-      <div className="card-title">📅 Calendario Académico</div>
+      <style>{`
+        @media (max-width: 480px) {
+          .cal-day {
+            font-size: 11px;
+            min-height: 28px;
+          }
+          .exam-legend {
+            flex-wrap: wrap;
+            gap: 8px;
+          }
+        }
+      `}</style>
+      <div className="card-title">
+        <CalendarDaysIcon style={{ width: 20, height: 20, display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+        Calendario Académico
+      </div>
 
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom: 12 }}>
-        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.max(p-1,0))}>‹</button>
+        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.max(p-1,0))}>
+          <ChevronLeftIcon style={{ width: 18, height: 18 }} />
+        </button>
         <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--green-800)' }}>{MESES[mes]} {anio}</span>
-        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.min(p+1,11))}>›</button>
+        <button className="btn btn-secondary btn-sm" onClick={() => setMes(p=>Math.min(p+1,11))}>
+          <ChevronRightIcon style={{ width: 18, height: 18 }} />
+        </button>
       </div>
 
       <div className="cal-grid">
@@ -53,7 +73,7 @@ export default function CalendarioAcademico({ onNotify }) {
 
       {semCongelada && (
         <div className="seguro-alert" style={{ marginTop: 12 }}>
-          <span style={{ fontSize: 22 }}>🛡️</span>
+          <ShieldCheckIcon style={{ width: 24, height: 24, flexShrink: 0 }} />
           <div>
             <strong>Seguro de Carga Académica activado</strong><br />
             Semana de exámenes. La postulación a tareas está congelada automáticamente. ¡Concéntrate en tus notas!
