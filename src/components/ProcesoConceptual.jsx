@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import {
   AcademicCapIcon,
   UserIcon,
@@ -66,31 +67,63 @@ export default function ProcesoConceptual() {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {PROCESOS.map((proc, i) => (
-          <div key={i} style={{ background: proc.bg, border: `1px solid ${proc.border}`, borderRadius: 12, padding: '14px 16px' }}>
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            style={{ background: proc.bg, border: `1px solid ${proc.border}`, borderRadius: 12, padding: '14px 16px' }}
+          >
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--green-800)', marginBottom: 12 }}>
               {proc.titulo}
             </div>
-            <div className="proceso-row">
+            <motion.div
+              className="proceso-row"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.12 } }
+              }}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+            >
               {proc.pasos.map((paso, j) =>
                 paso.arrow
-                  ? <span key={j} className="proceso-arrow">›</span>
+                  ? (
+                    <motion.span
+                      key={j}
+                      className="proceso-arrow"
+                      variants={{
+                        hidden: { opacity: 0, x: -6 },
+                        show: { opacity: 1, x: 0, transition: { duration: 0.2 } }
+                      }}
+                    >›</motion.span>
+                  )
                   : (
-                    <div key={j} className="proceso-node">
+                    <motion.div
+                      key={j}
+                      className="proceso-node"
+                      variants={{
+                        hidden: { opacity: 0, scale: 0.7, y: 10 },
+                        show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 16 } }
+                      }}
+                    >
                       <div className="proceso-icon" style={{ background: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <paso.Icon className="proceso-icon-svg" style={{ width: 22, height: 22 }} />
                       </div>
                       <span className="proceso-node-label">{paso.label}</span>
-                    </div>
+                    </motion.div>
                   )
               )}
-            </div>
+            </motion.div>
             {proc.note && (
               <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--green-800)', background: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 10px', display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                 <proc.note.NoteIcon style={{ width: 16, height: 16, flexShrink: 0 }} />
                 {proc.note.text}
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

@@ -1,5 +1,19 @@
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, animate } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { BanknotesIcon, CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+
+function useCountUp(target, duration = 1.2) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    const controls = animate(0, target, {
+      duration,
+      ease: 'easeOut',
+      onUpdate: v => setDisplay(Math.round(v)),
+    })
+    return controls.stop
+  }, [target])
+  return display
+}
 
 function semaforoColor(pct) {
   if (pct >= 100) return { color: '#2E7D52', bg: '#E6F5ED', label: 'Verde', Icon: CheckCircleIcon, text: 'Cuota 100% cubierta por SebaPro' }
@@ -105,6 +119,11 @@ const SEMAFORO_STYLE = `
 `
 
 export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restante, porcentaje }) {
+  const animatedMontoCuota = useCountUp(montoCuota)
+  const animatedCreditoAcumulado = useCountUp(creditoAcumulado)
+  const animatedRestante = useCountUp(restante)
+  const animatedHeroAmount = useCountUp(creditoAcumulado)
+
   const categorias = [
     { nombre: 'Micro-tareas campus', valor: Math.round(creditoAcumulado * 0.45) },
     { nombre: 'Tutorías académicas', valor: Math.round(creditoAcumulado * 0.35) },
@@ -142,15 +161,17 @@ export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restant
         {/* Tarjeta verde hero */}
         <div className="hero-card" style={{ flex: '1 1 200px', minWidth: 180 }}>
           <div className="hero-label">Total acumulado por SebaPro</div>
-          <div className="hero-amount">${creditoAcumulado.toLocaleString('es-CL')}</div>
+          <div className="hero-amount">${animatedHeroAmount.toLocaleString('es-CL')}</div>
           <div className="hero-sub" style={{ marginBottom: 16 }}>Nota de Crédito Automática</div>
           <div className="progress-bar-wrap">
             <div className="progress-track" style={{ flex: 1 }}>
-              <div className="progress-fill" style={{
-                width: `${Math.min(porcentaje, 100)}%`,
-                background: semaforo.color,
-                transition: 'width 1s ease, background 0.5s',
-              }} />
+              <motion.div
+                className="progress-fill"
+                style={{ background: semaforo.color }}
+                initial={{ width: '0%' }}
+                animate={{ width: `${Math.min(porcentaje, 100)}%` }}
+                transition={{ duration: 1.2, ease: 'easeOut', delay: 0.3 }}
+              />
             </div>
             <span className="progress-pct">{porcentaje}%</span>
           </div>
@@ -193,9 +214,9 @@ export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restant
             Resumen del mes
           </div>
           {[
-            { label: 'Monto original cuota', val: `$${montoCuota.toLocaleString('es-CL')}`, color: 'var(--text-2)' },
-            { label: 'Abonado por SebaPro', val: `$${creditoAcumulado.toLocaleString('es-CL')}`, color: 'var(--green-700)' },
-            { label: 'Monto restante a pagar', val: `$${restante.toLocaleString('es-CL')}`, color: restante === 0 ? 'var(--green-700)' : semaforo.color },
+            { label: 'Monto original cuota', val: `$${animatedMontoCuota.toLocaleString('es-CL')}`, color: 'var(--text-2)' },
+            { label: 'Abonado por SebaPro', val: `$${animatedCreditoAcumulado.toLocaleString('es-CL')}`, color: 'var(--green-700)' },
+            { label: 'Monto restante a pagar', val: `$${animatedRestante.toLocaleString('es-CL')}`, color: restante === 0 ? 'var(--green-700)' : semaforo.color },
           ].map(r => (
             <div key={r.label} style={{
               display: 'flex', justifyContent: 'space-between',

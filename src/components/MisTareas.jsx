@@ -215,7 +215,8 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
                       className={`kanban-task-card${task.estado === 'congelada' ? ' congelada' : ''}`}
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.2, delay: index * 0.05 }}
+                      whileHover={{ y: -3, boxShadow: '0 8px 24px rgba(0,0,0,0.13)' }}
+                      transition={{ layout: { duration: 0.3 }, duration: 0.18, delay: index * 0.05, type: 'tween' }}
                     >
                       <div className="kanban-task-top">
                         <div className="kanban-task-icon" style={{ background: ts.bg }}>

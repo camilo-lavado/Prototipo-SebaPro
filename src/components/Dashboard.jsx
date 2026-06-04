@@ -1,5 +1,18 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence, animate } from 'framer-motion'
+
+function useCountUp(target, duration = 1.2) {
+  const [display, setDisplay] = useState(0)
+  useEffect(() => {
+    const controls = animate(0, target, {
+      duration,
+      ease: 'easeOut',
+      onUpdate: v => setDisplay(Math.round(v)),
+    })
+    return controls.stop
+  }, [target])
+  return display
+}
 import { HandRaisedIcon } from '@heroicons/react/24/outline'
 import { CheckCircleIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid'
 import { useUser } from '../context/UserContext'
@@ -43,6 +56,9 @@ export default function Dashboard() {
   const restante = Math.max(currentUser.montoCuota - creditoAcumulado, 0)
   const porcentaje = Math.round((creditoAcumulado / currentUser.montoCuota) * 100)
   const nombre = currentUser.nombre.split(' ')[0]
+
+  const animatedKValue = useCountUp(Math.round(creditoAcumulado / 1000))
+  const animatedPorcentaje = useCountUp(porcentaje)
 
   return (
     <>
@@ -90,12 +106,12 @@ export default function Dashboard() {
           <div className="greeting-stats">
             <div className="stat-box" style={{ minWidth: 100 }}>
               <div className="stat-box-value">
-                ${(creditoAcumulado / 1000).toFixed(0)}K
+                ${animatedKValue}K
               </div>
               <div className="stat-box-label">créditos acumulados</div>
             </div>
             <div className="stat-box" style={{ minWidth: 100 }}>
-              <div className="stat-box-value">{porcentaje}%</div>
+              <div className="stat-box-value">{animatedPorcentaje}%</div>
               <div className="stat-box-label">arancel cubierto</div>
             </div>
           </div>

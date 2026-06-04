@@ -1,7 +1,17 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useUser } from '../context/UserContext'
 import { TrophyIcon, EllipsisHorizontalCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import { CheckIcon } from '@heroicons/react/24/solid'
+
+const listVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07 } }
+}
+const itemVariants = {
+  hidden: { opacity: 0, x: -12 },
+  show:   { opacity: 1, x: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+}
 
 export default function Competencias() {
   const { currentUser } = useUser()
@@ -46,20 +56,32 @@ export default function Competencias() {
           </span>
         </div>
 
-        {competencias.map(comp => (
-          <div
-            key={comp.id}
-            className={`comp-item ${comp.validada ? 'validada' : 'pendiente'}`}
-          >
-            <span>{comp.nombre}</span>
-            <div className={`comp-check ${comp.validada ? 'ok' : 'pending'}`}>
-              {comp.validada
-                ? <CheckIcon style={{ width: 14, height: 14, color: '#16a34a' }} />
-                : <EllipsisHorizontalCircleIcon style={{ width: 14, height: 14, color: '#9CA3AF' }} />
-              }
-            </div>
-          </div>
-        ))}
+        <motion.div variants={listVariants} initial="hidden" animate="show">
+          {competencias.map(comp => (
+            <motion.div
+              key={comp.id}
+              variants={itemVariants}
+              className={`comp-item ${comp.validada ? 'validada' : 'pendiente'}`}
+              whileHover={{ backgroundColor: '#F0F9F4', x: 3 }}
+            >
+              <span>{comp.nombre}</span>
+              <div className={`comp-check ${comp.validada ? 'ok' : 'pending'}`}>
+                {comp.validada
+                  ? (
+                    <motion.div
+                      initial={{ scale: 0, rotate: -20 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }}
+                    >
+                      <CheckIcon style={{ width: 14, height: 14, color: '#16a34a' }} />
+                    </motion.div>
+                  )
+                  : <EllipsisHorizontalCircleIcon style={{ width: 14, height: 14, color: '#9CA3AF' }} />
+                }
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
         <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
