@@ -151,9 +151,10 @@ export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restant
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 20, alignItems: 'stretch', flexWrap: 'wrap' }}>
+      {/* Fila superior: semáforo + hero + donut */}
+      <div style={{ display: 'flex', gap: 16, alignItems: 'stretch', flexWrap: 'wrap', marginBottom: 14 }}>
 
-        {/* Semáforo — hidden on mobile via .semaforo-widget */}
+        {/* Semáforo */}
         <div className="semaforo-widget">
           <Semaforo pct={porcentaje} />
         </div>
@@ -177,63 +178,69 @@ export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restant
           </div>
         </div>
 
-        {/* Donut chart */}
-        <div style={{ flex: '1 1 180px', minWidth: 160, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
-          <div className="donut-wrap">
-            <div style={{ position: 'relative', flexShrink: 0 }}>
-              <Donut pct={porcentaje} />
-              <div style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center',
-              }}>
-                <motion.div
-                  key={porcentaje}
-                  className="donut-pct"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 0.4 }}
-                >{porcentaje}%</motion.div>
-                <div className="donut-pct-label">cubierto</div>
-              </div>
-            </div>
-            <div className="donut-legend">
-              {categorias.map((c, i) => (
-                <div key={c.nombre} className="legend-row">
-                  <div className="legend-dot" style={{ background: LEGEND_COLORS[i] }} />
-                  <span className="legend-name">{c.nombre}</span>
-                  <span className="legend-val">${c.valor.toLocaleString('es-CL')}</span>
-                </div>
-              ))}
+        {/* Donut — solo el gráfico, sin leyenda */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ position: 'relative' }}>
+            <Donut pct={porcentaje} />
+            <div style={{
+              position: 'absolute', inset: 0,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <motion.div
+                key={porcentaje}
+                className="donut-pct"
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 0.4 }}
+              >{porcentaje}%</motion.div>
+              <div className="donut-pct-label">cubierto</div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Fila inferior: leyenda + resumen */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+
+        {/* Leyenda de categorías */}
+        <div style={{ background: 'var(--green-50)', borderRadius: 10, padding: '12px 14px' }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 10 }}>
+            Desglose por tipo
+          </div>
+          {categorias.map((c, i) => (
+            <div key={c.nombre} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', borderBottom: i < 2 ? '1px solid var(--border)' : 'none' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: LEGEND_COLORS[i], flexShrink: 0 }} />
+              <span style={{ flex: 1, fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{c.nombre}</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--green-800)' }}>${c.valor.toLocaleString('es-CL')}</span>
+            </div>
+          ))}
+        </div>
 
         {/* Resumen numérico */}
-        <div style={{ flex: '1 1 160px', minWidth: 150, display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: 0.6 }}>
             Resumen del mes
           </div>
           {[
             { label: 'Monto original cuota', val: `$${animatedMontoCuota.toLocaleString('es-CL')}`, color: 'var(--text-2)' },
-            { label: 'Abonado por SebaPro', val: `$${animatedCreditoAcumulado.toLocaleString('es-CL')}`, color: 'var(--green-700)' },
-            { label: 'Monto restante a pagar', val: `$${animatedRestante.toLocaleString('es-CL')}`, color: restante === 0 ? 'var(--green-700)' : semaforo.color },
+            { label: 'Abonado por SebaPro',  val: `$${animatedCreditoAcumulado.toLocaleString('es-CL')}`, color: 'var(--green-700)' },
+            { label: 'Restante a pagar',      val: `$${animatedRestante.toLocaleString('es-CL')}`, color: restante === 0 ? 'var(--green-700)' : semaforo.color },
           ].map(r => (
             <div key={r.label} style={{
-              display: 'flex', justifyContent: 'space-between',
-              padding: '8px 12px', background: 'var(--green-50)',
-              borderRadius: 8, alignItems: 'center',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '8px 12px', background: 'var(--green-50)', borderRadius: 8, gap: 8,
             }}>
-              <span style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500 }}>{r.label}</span>
-              <span style={{ fontSize: 13, fontWeight: 800, color: r.color }}>{r.val}</span>
+              <span style={{ fontSize: 11, color: 'var(--text-2)', fontWeight: 500, flex: 1, minWidth: 0 }}>{r.label}</span>
+              <span style={{ fontSize: 13, fontWeight: 800, color: r.color, flexShrink: 0 }}>{r.val}</span>
             </div>
           ))}
           {restante === 0 && (
             <div style={{ background: '#E6F5ED', border: '1px solid #B3DFC5', borderRadius: 8, padding: '8px 12px', fontSize: 11, color: '#0A3622', fontWeight: 600, textAlign: 'center' }}>
-              🎉 ¡Arancel completamente cubierto!
+              ¡Arancel completamente cubierto!
             </div>
           )}
         </div>
-      </div>
+      </div>{/* fin grid inferior */}
     </div>
     </>
   )

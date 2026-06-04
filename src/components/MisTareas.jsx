@@ -137,11 +137,18 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
           font-size: 12px;
           color: #111827;
           line-height: 1.3;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
         }
         .kanban-task-meta {
           font-size: 11px;
           color: #6B7280;
           margin-top: 2px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
         .kanban-task-footer {
           display: flex;
@@ -155,12 +162,18 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
           font-size: 13px;
           color: #1A5C38;
           line-height: 1.1;
+          min-width: 0;
         }
         .kanban-task-value span {
           font-weight: 500;
           font-size: 10px;
           color: #6B7280;
           display: block;
+          white-space: nowrap;
+        }
+        .kanban-task-footer > div:first-child {
+          min-width: 0;
+          overflow: hidden;
         }
         .kanban-empty {
           font-size: 12px;
