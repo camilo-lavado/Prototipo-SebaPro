@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './index.css'
+import { AnimatePresence, motion } from 'framer-motion'
 import { UserProvider, useUser } from './context/UserContext'
 import {
   AcademicCapIcon, DocumentTextIcon, BookOpenIcon,
@@ -52,12 +53,22 @@ function AppContent() {
           <span className="breadcrumb-meta">{currentUser.carrera} · {currentUser.nivel}</span>
         </div>
 
-        {activeView === 'sebapro'    && <Dashboard />}
-        {activeView === 'academia'   && <Academia />}
-        {activeView === 'notas'      && <Notas />}
-        {activeView === 'biblioteca' && <Biblioteca />}
-        {activeView === 'seguro'     && <SeguroAcademico />}
-        {activeView === 'asistencia' && <Asistencia />}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeView}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            {activeView === 'sebapro'    && <Dashboard />}
+            {activeView === 'academia'   && <Academia />}
+            {activeView === 'notas'      && <Notas />}
+            {activeView === 'biblioteca' && <Biblioteca />}
+            {activeView === 'seguro'     && <SeguroAcademico />}
+            {activeView === 'asistencia' && <Asistencia />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   )

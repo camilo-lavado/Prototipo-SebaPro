@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { HandRaisedIcon } from '@heroicons/react/24/outline'
 import { CheckCircleIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid'
 import { useUser } from '../context/UserContext'
@@ -8,6 +9,15 @@ import Competencias from './Competencias'
 import CalendarioAcademico from './CalendarioAcademico'
 import ProcesoConceptual from './ProcesoConceptual'
 import Notification from './Notification'
+
+const containerVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } }
+}
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }
+}
 
 export default function Dashboard() {
   const { currentUser } = useUser()
@@ -53,10 +63,16 @@ export default function Dashboard() {
           }
         }
       `}</style>
-      <div className="content-area">
+      <motion.div
+        className="content-area"
+        key={currentUser.id}
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
 
         {/* Logo prominente + Saludo */}
-        <div className="greeting-header">
+        <motion.div variants={itemVariants} className="greeting-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <img
               src="/logo.jpg"
@@ -83,28 +99,32 @@ export default function Dashboard() {
               <div className="stat-box-label">arancel cubierto</div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Estado financiero con donut */}
-        <EstadoFinanciero
-          montoCuota={currentUser.montoCuota}
-          creditoAcumulado={creditoAcumulado}
-          restante={restante}
-          porcentaje={porcentaje}
-        />
+        <motion.div variants={itemVariants}>
+          <EstadoFinanciero
+            montoCuota={currentUser.montoCuota}
+            creditoAcumulado={creditoAcumulado}
+            restante={restante}
+            porcentaje={porcentaje}
+          />
+        </motion.div>
 
         {/* Tareas y competencias */}
-        <MisTareas onCompletarTarea={addCredito} onNotify={notify} />
-        <Competencias />
+        <motion.div variants={itemVariants}><MisTareas onCompletarTarea={addCredito} onNotify={notify} /></motion.div>
+        <motion.div variants={itemVariants}><Competencias /></motion.div>
 
         {/* Calendario */}
-        <CalendarioAcademico onNotify={notify} />
+        <motion.div variants={itemVariants}><CalendarioAcademico onNotify={notify} /></motion.div>
 
         {/* Proceso */}
-        <ProcesoConceptual />
-      </div>
+        <motion.div variants={itemVariants}><ProcesoConceptual /></motion.div>
+      </motion.div>
 
-      {notification && <Notification icon={notification.icon} msg={notification.msg} />}
+      <AnimatePresence>
+        {notification && <Notification key="notif" icon={notification.icon} msg={notification.msg} />}
+      </AnimatePresence>
     </>
   )
 }

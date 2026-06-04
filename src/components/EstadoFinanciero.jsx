@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { BanknotesIcon, CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 
 function semaforoColor(pct) {
@@ -14,13 +15,27 @@ function Semaforo({ pct }) {
 
   const luz = (activa, colorOn, colorOff, label) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-      <div style={{
-        width: 32, height: 32, borderRadius: '50%',
-        background: activa ? colorOn : colorOff,
-        boxShadow: activa ? `0 0 14px 4px ${colorOn}99, 0 0 4px 1px ${colorOn}` : 'none',
-        border: `2px solid ${activa ? colorOn : '#374151'}`,
-        transition: 'all 0.5s ease',
-      }} />
+      {activa ? (
+        <motion.div
+          style={{
+            width: 32, height: 32, borderRadius: '50%',
+            background: colorOn,
+            border: `2px solid ${colorOn}`,
+          }}
+          animate={{ boxShadow: [
+            `0 0 10px 2px ${colorOn}60`,
+            `0 0 22px 6px ${colorOn}99`,
+            `0 0 10px 2px ${colorOn}60`,
+          ]}}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      ) : (
+        <div style={{
+          width: 32, height: 32, borderRadius: '50%',
+          background: colorOff,
+          border: '2px solid #374151',
+        }} />
+      )}
       <span style={{ fontSize: 8, fontWeight: 700, color: activa ? colorOn : '#4B5563', letterSpacing: 0.5, textTransform: 'uppercase' }}>
         {label}
       </span>
@@ -151,7 +166,12 @@ export default function EstadoFinanciero({ montoCuota, creditoAcumulado, restant
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center',
               }}>
-                <div className="donut-pct">{porcentaje}%</div>
+                <motion.div
+                  key={porcentaje}
+                  className="donut-pct"
+                  animate={{ scale: [1, 1.15, 1] }}
+                  transition={{ duration: 0.4 }}
+                >{porcentaje}%</motion.div>
                 <div className="donut-pct-label">cubierto</div>
               </div>
             </div>

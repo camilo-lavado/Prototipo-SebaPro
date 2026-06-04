@@ -1,7 +1,23 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useUser } from '../context/UserContext'
 import Avatar from './Avatar'
 import { LockOpenIcon, CheckIcon } from '@heroicons/react/24/outline'
+
+const listVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.18,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
+}
 
 export default function LoginScreen({ onLogin }) {
   const { USERS, currentUser, setCurrentUser } = useUser()
@@ -42,10 +58,20 @@ export default function LoginScreen({ onLogin }) {
         </div>
       </div>
 
-      <div className="login-card">
-        <div className="login-logo">
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.32, ease: 'easeOut', delay: 0.1 }}
+      >
+        <motion.div
+          className="login-logo"
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+        >
           <img src="/logo.jpg" alt="SebaPro Connect" style={{ width: 110, height: 110, objectFit: 'contain', borderRadius: '50%' }} />
-        </div>
+        </motion.div>
 
         <div className="login-title">SebaPro Connect</div>
         <div className="login-sub">
@@ -54,10 +80,16 @@ export default function LoginScreen({ onLogin }) {
 
         {step === 'select' && (
           <>
-            <div className="login-user-select">
+            <motion.div
+              className="login-user-select"
+              variants={listVariants}
+              initial="hidden"
+              animate="visible"
+            >
               {USERS.map(u => (
-                <div
+                <motion.div
                   key={u.id}
+                  variants={itemVariants}
                   className={`login-user-btn ${currentUser.id === u.id ? 'selected' : ''}`}
                   onClick={() => setCurrentUser(u)}
                 >
@@ -71,9 +103,9 @@ export default function LoginScreen({ onLogin }) {
                   {currentUser.id === u.id && (
                     <CheckIcon style={{ width: 18, height: 18, color: '#2E7D52', flexShrink: 0 }} />
                   )}
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
             <button
               className="login-btn"
               style={{ marginTop: 20 }}
@@ -114,7 +146,7 @@ export default function LoginScreen({ onLogin }) {
             </button>
           </form>
         )}
-      </div>
+      </motion.div>
 
       <div style={{ marginTop: 24, fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center' }}>
         Prototipo de Media Fidelidad · Mayo 2026

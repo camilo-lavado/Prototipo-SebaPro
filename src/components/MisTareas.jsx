@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import {
   ClipboardDocumentCheckIcon, ClockIcon, PlusCircleIcon,
   ComputerDesktopIcon, CalculatorIcon, FolderOpenIcon,
@@ -202,14 +203,19 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
 
                 {colTasks.length === 0 && <div className="kanban-empty">Sin tareas</div>}
 
-                {colTasks.map(task => {
+                {colTasks.map((task, index) => {
                   const ts = TASK_ICONS[task.tipo] || { Icon: BoltIcon, bg: '#F0F9F4', color: '#1A5C38' }
                   const TaskIcon = task.estado === 'congelada' ? LockClosedIcon : ts.Icon
                   const iconColor = task.estado === 'congelada' ? '#6B7280' : ts.color
                   return (
-                    <div
+                    <motion.div
                       key={task.id}
+                      layout
+                      layoutId={String(task.id)}
                       className={`kanban-task-card${task.estado === 'congelada' ? ' congelada' : ''}`}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2, delay: index * 0.05 }}
                     >
                       <div className="kanban-task-top">
                         <div className="kanban-task-icon" style={{ background: ts.bg }}>
@@ -232,13 +238,13 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
                           </span>
                         </div>
                         <div>
-                          {task.estado === 'pendiente'  && <button className="btn btn-primary btn-sm" onClick={() => iniciar(task.id)}>Postular</button>}
-                          {task.estado === 'ejecucion'  && <button className="btn btn-primary btn-sm" style={{ background: 'var(--green-500)' }} onClick={() => completar(task.id)}>Entregar ✓</button>}
+                          {task.estado === 'pendiente'  && <motion.button whileTap={{ scale: 0.93 }} className="btn btn-primary btn-sm" onClick={() => iniciar(task.id)}>Postular</motion.button>}
+                          {task.estado === 'ejecucion'  && <motion.button whileTap={{ scale: 0.93 }} className="btn btn-primary btn-sm" style={{ background: 'var(--green-500)' }} onClick={() => completar(task.id)}>Entregar ✓</motion.button>}
                           {task.estado === 'finalizada' && <CheckCircleSolid style={{ width: 22, height: 22, color: '#16a34a' }} />}
                           {task.estado === 'congelada'  && <span style={{ fontSize: 20 }}>❄️</span>}
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   )
                 })}
               </div>
