@@ -17,15 +17,13 @@ import {
 } from '@heroicons/react/24/solid'
 
 const NAV_ITEMS = [
-  { id: 'academia',   Icon: AcademicCapIcon,          IconSolid: AcademicCapSolid,   label: 'Academia' },
-  { id: 'notas',      Icon: DocumentTextIcon,          IconSolid: DocumentTextSolid,  label: 'Notas' },
-  { id: 'biblioteca', Icon: BookOpenIcon,              IconSolid: BookOpenSolid,      label: 'Biblioteca' },
-  { id: 'seguro',     Icon: ShieldCheckIcon,           IconSolid: ShieldCheckSolid,   label: 'Seguro' },
-  { id: 'asistencia', Icon: ClipboardDocumentListIcon, IconSolid: ClipboardSolid,     label: 'Asistencia' },
-  { id: 'sebapro',    Icon: SparklesIcon,              IconSolid: SparklesSolid,      label: 'SebaPro' },
+  { id: 'academia',   Icon: AcademicCapIcon,          IconSolid: AcademicCapSolid,   label: 'Academia',   mobileHide: false },
+  { id: 'notas',      Icon: DocumentTextIcon,          IconSolid: DocumentTextSolid,  label: 'Notas',      mobileHide: false },
+  { id: 'biblioteca', Icon: BookOpenIcon,              IconSolid: BookOpenSolid,      label: 'Biblioteca', mobileHide: true  },
+  { id: 'seguro',     Icon: ShieldCheckIcon,           IconSolid: ShieldCheckSolid,   label: 'Seguro',     mobileHide: false },
+  { id: 'asistencia', Icon: ClipboardDocumentListIcon, IconSolid: ClipboardSolid,     label: 'Asistencia', mobileHide: true  },
+  { id: 'sebapro',    Icon: SparklesIcon,              IconSolid: SparklesSolid,      label: 'SebaPro',    mobileHide: false, special: true },
 ]
-
-const SEBAPRO_ITEMS = ['sebapro']
 
 const navVariants = {
   hidden: {},
@@ -37,12 +35,12 @@ const itemVariants = {
 }
 
 export default function Sidebar({ activeView, onNavigate }) {
-  const mainItems = NAV_ITEMS.filter(i => !SEBAPRO_ITEMS.includes(i.id))
-  const sebaproItem = NAV_ITEMS.find(i => i.id === 'sebapro')
+  const mainItems  = NAV_ITEMS.filter(i => !i.special)
+  const sebaItem   = NAV_ITEMS.find(i => i.special)
 
   return (
-    <div className="sidebar sidebar-mobile-nav">
-      {/* Logo */}
+    <div className="sidebar">
+      {/* Brand — oculto en móvil vía CSS */}
       <motion.div className="sidebar-brand" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
         <div className="sidebar-logo-wrap">
           <img src="/logo2.jpg" alt="SebaPro Connect" className="sidebar-logo-img" />
@@ -53,19 +51,16 @@ export default function Sidebar({ activeView, onNavigate }) {
         </div>
       </motion.div>
 
-      {/* Divider */}
       <div className="sidebar-divider" />
-
-      {/* Label sección */}
       <div className="sidebar-section-label">Servicios</div>
 
-      {/* Nav principal */}
+      {/* Nav items */}
       <motion.div className="sidebar-nav" variants={navVariants} initial="hidden" animate="show">
         {mainItems.map(item => {
           const active = activeView === item.id
           const ActiveIcon = active ? item.IconSolid : item.Icon
           return (
-            <motion.div key={item.id} variants={itemVariants}>
+            <motion.div key={item.id} variants={itemVariants} className={item.mobileHide ? 'mobile-hide' : ''}>
               <button
                 className={`sidebar-item ${active ? 'active' : ''}`}
                 onClick={() => onNavigate(item.id)}
@@ -82,18 +77,16 @@ export default function Sidebar({ activeView, onNavigate }) {
         })}
       </motion.div>
 
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Divider */}
+      {/* Spacer — oculto en móvil */}
+      <div className="sidebar-spacer" />
       <div className="sidebar-divider" />
 
-      {/* SebaPro destacado al fondo */}
-      {sebaproItem && (() => {
+      {/* SebaPro — siempre visible, destacado en desktop, igual que otros en móvil */}
+      {sebaItem && (() => {
         const active = activeView === 'sebapro'
-        const ActiveIcon = active ? sebaproItem.IconSolid : sebaproItem.Icon
+        const ActiveIcon = active ? sebaItem.IconSolid : sebaItem.Icon
         return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <motion.div className="sidebar-seba-wrap" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
             <button
               className={`sidebar-item sidebar-sebapro ${active ? 'active' : ''}`}
               onClick={() => onNavigate('sebapro')}
@@ -109,7 +102,7 @@ export default function Sidebar({ activeView, onNavigate }) {
         )
       })()}
 
-      <div style={{ height: 8 }} />
+      <div className="sidebar-bottom-pad" />
     </div>
   )
 }
