@@ -3,26 +3,26 @@ import { CalendarDaysIcon, ChevronLeftIcon, ChevronRightIcon, ShieldCheckIcon } 
 
 const DIAS  = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom']
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-const EXAM_DAYS   = [19,20,21,26,27,28]
-const FROZEN_DAYS = [18,19,20,21,22,25,26,27,28,29]
+const EXAM_DAYS   = [22,23,24,29,30]
+const FROZEN_DAYS = [20,21,22,23,24,25,26,27,28,29,30]
 
 function firstDay(y, m) { const d = new Date(y,m,1).getDay(); return d===0?6:d-1 }
 function daysIn(y,m)    { return new Date(y,m+1,0).getDate() }
 
 export default function CalendarioAcademico({ onNotify }) {
-  const [mes, setMes] = useState(4)
-  const anio = 2026, hoy = 28
+  const [mes, setMes] = useState(5)
+  const anio = 2026, hoy = 12
 
   const blanks = firstDay(anio, mes)
   const total  = daysIn(anio, mes)
   const celdas = [...Array(blanks).fill(null), ...Array.from({length:total},(_,i)=>i+1)]
 
-  const isExamMes   = mes === 4
+  const isExamMes   = mes === 5
   const semCongelada = isExamMes && FROZEN_DAYS.includes(hoy)
 
   const getClass = d => {
     if (!d) return 'empty'
-    if (d === hoy && mes === 4) return 'today'
+    if (d === hoy && mes === 5) return 'today'
     if (isExamMes && EXAM_DAYS.includes(d))   return 'exam'
     if (isExamMes && FROZEN_DAYS.includes(d)) return 'frozen'
     return ''

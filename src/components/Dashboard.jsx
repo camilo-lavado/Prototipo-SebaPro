@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, animate } from 'framer-motion'
 
 function useCountUp(target, duration = 1.2) {
@@ -37,15 +37,17 @@ export default function Dashboard() {
   const [creditoAcumulado, setCreditoAcumulado] = useState(currentUser.creditoAcumulado)
   const [prevUserId, setPrevUserId] = useState(currentUser.id)
   const [notification, setNotification] = useState(null)
+  const semRef = useRef(Math.round((currentUser.creditoAcumulado / currentUser.montoCuota) * 100))
 
   if (currentUser.id !== prevUserId) {
     setPrevUserId(currentUser.id)
     setCreditoAcumulado(currentUser.creditoAcumulado)
+    semRef.current = Math.round((currentUser.creditoAcumulado / currentUser.montoCuota) * 100)
   }
 
   const notify = (msg, icon = <CheckCircleIcon style={{ width: 22, height: 22, color: 'var(--green-600)' }} />) => {
     setNotification({ msg, icon })
-    setTimeout(() => setNotification(null), 3500)
+    setTimeout(() => setNotification(null), 3800)
   }
 
   const addCredito = (amount) => {
@@ -55,6 +57,25 @@ export default function Dashboard() {
 
   const restante = Math.max(currentUser.montoCuota - creditoAcumulado, 0)
   const porcentaje = Math.round((creditoAcumulado / currentUser.montoCuota) * 100)
+
+  useEffect(() => {
+    const prev = semRef.current
+    semRef.current = porcentaje
+    if (prev === 0 && porcentaje > 0) {
+      const t = setTimeout(() => {
+        setNotification({ msg: '¡Semáforo Amarillo activado! Tu arancel ya tiene cobertura SebaPro 🟡', icon: <span style={{ fontSize: 20 }}>🚦</span> })
+        setTimeout(() => setNotification(null), 4500)
+      }, 2400)
+      return () => clearTimeout(t)
+    }
+    if (prev > 0 && prev < 100 && porcentaje >= 100) {
+      const t = setTimeout(() => {
+        setNotification({ msg: '¡Arancel 100% cubierto por SebaPro! Semáforo Verde activado 🟢', icon: <span style={{ fontSize: 20 }}>🎉</span> })
+        setTimeout(() => setNotification(null), 4500)
+      }, 2400)
+      return () => clearTimeout(t)
+    }
+  }, [porcentaje])
   const nombre = currentUser.nombre.split(' ')[0]
 
   const animatedKValue = useCountUp(Math.round(creditoAcumulado / 1000))

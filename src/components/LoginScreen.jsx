@@ -19,6 +19,13 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
 }
 
+function getSemaforo(u) {
+  const pct = u.montoCuota > 0 ? u.creditoAcumulado / u.montoCuota : 0
+  if (pct === 0) return { color: '#EF4444', label: 'Sin cobertura 🔴' }
+  if (pct >= 1) return { color: '#22C55E', label: '100% cubierto 🟢' }
+  return { color: '#F59E0B', label: `${Math.round(pct * 100)}% cubierto 🟡` }
+}
+
 export default function LoginScreen({ onLogin }) {
   const { USERS, currentUser, setCurrentUser } = useUser()
   const [step, setStep] = useState('select') // 'select' | 'form'
@@ -49,12 +56,15 @@ export default function LoginScreen({ onLogin }) {
       <div style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{
           fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.5)',
-          letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4,
+          letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6,
         }}>
           Instituto Profesional San Sebastián
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: 1 }}>
-          Tu conocimiento y tu esfuerzo pagan tu carrera
+        <div style={{ fontSize: 16, fontWeight: 800, color: 'rgba(255,255,255,0.92)', letterSpacing: -0.3, marginBottom: 4 }}>
+          Paga tu semestre trabajando,
+        </div>
+        <div style={{ fontSize: 16, fontWeight: 800, color: 'rgba(255,255,255,0.92)', letterSpacing: -0.3 }}>
+          no endeudándote.
         </div>
       </div>
 
@@ -98,6 +108,9 @@ export default function LoginScreen({ onLogin }) {
                     <div style={{ fontSize: 13, fontWeight: 700, color: '#0D3320' }}>{u.nombre}</div>
                     <div style={{ fontSize: 11, color: '#4A7260', marginTop: 1 }}>
                       {u.carrera.split(' ').slice(0, 3).join(' ')} · {u.nivel}
+                    </div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: getSemaforo(u).color, marginTop: 3 }}>
+                      {getSemaforo(u).label}
                     </div>
                   </div>
                   {currentUser.id === u.id && (
@@ -149,7 +162,7 @@ export default function LoginScreen({ onLogin }) {
       </motion.div>
 
       <div style={{ marginTop: 24, fontSize: 11, color: 'rgba(255,255,255,0.25)', textAlign: 'center' }}>
-        Prototipo de Media Fidelidad · Mayo 2026
+        Prototipo de Media Fidelidad · Junio 2026
       </div>
     </div>
   )

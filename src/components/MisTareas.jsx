@@ -181,7 +181,7 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
           text-align: center;
           padding: 14px 0;
         }
-        @media (max-width: 700px) {
+        @media (max-width: 860px) {
           .kanban-board { flex-direction: column; overflow-x: hidden; }
           .kanban-col   { min-width: 0; width: 100%; box-sizing: border-box; }
         }
@@ -253,7 +253,18 @@ export default function MisTareas({ onCompletarTarea, onNotify }) {
                         </div>
                         <div>
                           {task.estado === 'pendiente'  && <motion.button whileTap={{ scale: 0.93 }} className="btn btn-primary btn-sm" onClick={() => iniciar(task.id)}>Postular</motion.button>}
-                          {task.estado === 'ejecucion'  && <motion.button whileTap={{ scale: 0.93 }} className="btn btn-primary btn-sm" style={{ background: 'var(--green-500)' }} onClick={() => completar(task.id)}>Entregar ✓</motion.button>}
+                          {task.estado === 'ejecucion'  && (
+                            <motion.button
+                              whileTap={{ scale: 0.93 }}
+                              className="btn btn-primary btn-sm"
+                              style={{ background: 'var(--green-500)', fontWeight: 800 }}
+                              onClick={() => completar(task.id)}
+                              animate={{ scale: [1, 1.06, 1], boxShadow: ['0 0 0px #22c55e00', '0 0 10px #22c55e88', '0 0 0px #22c55e00'] }}
+                              transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+                            >
+                              Entregar ✓
+                            </motion.button>
+                          )}
                           {task.estado === 'finalizada' && <CheckCircleSolid style={{ width: 22, height: 22, color: '#16a34a' }} />}
                           {task.estado === 'congelada'  && <span style={{ fontSize: 20 }}>❄️</span>}
                         </div>

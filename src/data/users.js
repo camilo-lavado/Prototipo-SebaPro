@@ -41,8 +41,8 @@ export const USERS = [
 
     // Biblioteca
     prestamos: [
-      { id: 'BIB001', titulo: 'Administración, 14ª Edición', autor: 'Robbins & Coulter', vencimiento: '2026-06-05', estado: 'activo' },
-      { id: 'BIB002', titulo: 'Principios de Contabilidad', autor: 'Meigs & Meigs', vencimiento: '2026-05-30', estado: 'vence pronto' },
+      { id: 'BIB001', titulo: 'Administración, 14ª Edición', autor: 'Robbins & Coulter', vencimiento: '2026-06-22', estado: 'activo' },
+      { id: 'BIB002', titulo: 'Principios de Contabilidad', autor: 'Meigs & Meigs', vencimiento: '2026-06-15', estado: 'vence pronto' },
     ],
 
     // Seguro
@@ -103,9 +103,9 @@ export const USERS = [
 
     // Biblioteca
     prestamos: [
-      { id: 'BIB011', titulo: 'Computer Networks, 5th Ed.', autor: 'Andrew Tanenbaum', vencimiento: '2026-06-10', estado: 'activo' },
-      { id: 'BIB012', titulo: 'Clean Code', autor: 'Robert C. Martin', vencimiento: '2026-05-28', estado: 'vencido' },
-      { id: 'BIB013', titulo: 'The Pragmatic Programmer', autor: 'Hunt & Thomas', vencimiento: '2026-06-15', estado: 'activo' },
+      { id: 'BIB011', titulo: 'Computer Networks, 5th Ed.', autor: 'Andrew Tanenbaum', vencimiento: '2026-06-28', estado: 'activo' },
+      { id: 'BIB012', titulo: 'Clean Code', autor: 'Robert C. Martin', vencimiento: '2026-06-05', estado: 'vencido' },
+      { id: 'BIB013', titulo: 'The Pragmatic Programmer', autor: 'Hunt & Thomas', vencimiento: '2026-06-14', estado: 'vence pronto' },
     ],
 
     // Seguro
@@ -161,7 +161,7 @@ export const USERS = [
     ],
 
     prestamos: [
-      { id: 'BIB021', titulo: 'Contabilidad Financiera', autor: 'Guajardo & Andrade', vencimiento: '2026-06-12', estado: 'activo' },
+      { id: 'BIB021', titulo: 'Contabilidad Financiera', autor: 'Guajardo & Andrade', vencimiento: '2026-07-08', estado: 'activo' },
     ],
 
     seguro: {

@@ -15,7 +15,7 @@ export default function Topbar({ onLogout }) {
       </div>
 
       <div className="topbar-right">
-        <span className="topbar-meta">Vespertino · Mayo 2026</span>
+        <span className="topbar-meta">Vespertino · Junio 2026</span>
 
         <div style={{ position: 'relative' }}>
           <div className="user-chip" onClick={() => setOpen(o => !o)}>
